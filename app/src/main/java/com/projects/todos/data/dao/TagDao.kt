@@ -33,4 +33,13 @@ interface TagDao {
     
     @Query("DELETE FROM tags")
     suspend fun deleteAllTags()
+    
+    @Query("SELECT COUNT(*) FROM tasks WHERE tagId = :tagId")
+    suspend fun getTaskCountForTag(tagId: Int): Int
+    
+    @Query("SELECT COUNT(*) FROM tags")
+    suspend fun getTagCount(): Int
+    
+    @Query("SELECT * FROM tags ORDER BY name ASC")
+    suspend fun getAllTagsSync(): List<TagEntity>
 }

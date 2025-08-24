@@ -58,4 +58,7 @@ interface TaskDao {
     
     @Query("UPDATE tasks SET isFavorite = :isFavorite, updatedAt = :timestamp WHERE id = :taskId")
     suspend fun updateTaskFavorite(taskId: Int, isFavorite: Boolean, timestamp: Long = System.currentTimeMillis())
+    
+    @Query("UPDATE tasks SET tagId = :newTagId, updatedAt = :timestamp WHERE tagId = :oldTagId")
+    suspend fun updateTasksTagId(oldTagId: Int, newTagId: Int, timestamp: Long = System.currentTimeMillis())
 }

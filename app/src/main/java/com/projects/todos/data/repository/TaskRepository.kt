@@ -140,4 +140,20 @@ class TaskRepository(private val taskDao: TaskDao) {
             throw e
         }
     }
+    
+    suspend fun updateTasksTagId(oldTagId: Int, newTagId: Int) {
+        AppLogger.methodEntry("TaskRepository", "updateTasksTagId", 
+            "oldTagId" to oldTagId, 
+            "newTagId" to newTagId
+        )
+        try {
+            taskDao.updateTasksTagId(oldTagId, newTagId)
+            AppLogger.dbOperation("TaskRepository", "UPDATE tagId", "tasks", "oldTagId: $oldTagId, newTagId: $newTagId")
+            AppLogger.methodExit("TaskRepository", "updateTasksTagId")
+        } catch (e: Exception) {
+            AppLogger.error("TaskRepository", "updateTasksTagId", e, "oldTagId: $oldTagId, newTagId: $newTagId")
+            AppLogger.methodExit("TaskRepository", "updateTasksTagId")
+            throw e
+        }
+    }
 }

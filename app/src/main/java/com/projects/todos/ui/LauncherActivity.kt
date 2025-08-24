@@ -2,17 +2,20 @@ package com.projects.todos.ui
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.WindowManager
 import androidx.lifecycle.lifecycleScope
 import com.projects.todos.MainActivity
 import com.projects.todos.data.UserPreferences
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class LauncherActivity : AppCompatActivity() {
+class LauncherActivity : BaseActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Set soft input mode for edge-to-edge friendly behavior
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         
         // Check onboarding status and navigate accordingly
         lifecycleScope.launch {

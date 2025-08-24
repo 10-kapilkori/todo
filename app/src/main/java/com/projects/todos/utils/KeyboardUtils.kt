@@ -1,82 +1,50 @@
 package com.projects.todos.utils
 
+import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 
-object KeyboardUtils {
-    
-    /**
-     * Hides the soft keyboard and clears focus in a single operation
-     * @param context The context
-     * @param view The view that currently has focus (optional)
-     */
-    fun hideKeyboard(context: Context, view: View? = null) {
-        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        val targetView = view ?: getCurrentFocus(context)
-        targetView?.let {
-            imm.hideSoftInputFromWindow(it.windowToken, 0)
-        }
-    }
-    
-    /**
-     * Hides keyboard and clears focus from a specific view in one operation
-     * @param context The context
-     * @param view The view to clear focus from and hide keyboard for
-     */
-    fun hideKeyboardAndClearFocus(context: Context, view: View) {
-        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        view.clearFocus()
+/**
+ * Hides the keyboard and clears focus from the current view
+ */
+fun Activity.hideKeyboard() {
+    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    currentFocus?.let { view ->
         imm.hideSoftInputFromWindow(view.windowToken, 0)
-    }
-    
-    /**
-     * Hides keyboard and clears focus from multiple views in one operation
-     * @param context The context
-     * @param views The views to clear focus from
-     */
-    fun hideKeyboardAndClearFocus(context: Context, vararg views: View) {
-        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-
-        // Clear focus from all views
-        views.forEach { it.clearFocus() }
-
-        // Hide keyboard using the first view or current focus
-        val targetView = views.firstOrNull() ?: getCurrentFocus(context)
-        targetView?.let {
-            imm.hideSoftInputFromWindow(it.windowToken, 0)
-        }
-    }
-
-    /**
-     * Shows the soft keyboard for a specific view
-     * @param context The context
-     * @param view The view to show keyboard for
-     */
-    fun showKeyboard(context: Context, view: View) {
-        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        view.requestFocus()
-        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
-    }
-    
-    /**
-     * Gets the currently focused view from the activity
-     * @param context The context
-     * @return The currently focused view or null
-     */
-    private fun getCurrentFocus(context: Context): View? {
-        return if (context is android.app.Activity) {
-            context.currentFocus
-        } else {
-            null
-        }
-    }
-    
-    /**
-     * Clears focus from a view
-     * @param view The view to clear focus from
-     */
-    fun clearFocus(view: View) {
         view.clearFocus()
     }
+}
+
+/**
+ * Hides the keyboard for a specific view
+ */
+fun View.hideKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(windowToken, 0)
+    clearFocus()
+}
+
+/**
+ * Shows the keyboard for an EditText
+ */
+fun EditText.showKeyboard() {
+    requestFocus()
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+}
+
+/**
+ * Sets up click listener to hide keyboard when clicking outside of input fields
+ * Call this on the root view of your layout
+ */
+fun View.setupKeyboardDismissOnOutsideClick() {
+    setOnClickListener {
+        hideKeyboard()
+    }
+    
+    // Make sure the view is focusable and clickable
+    isFocusableInTouchMode = true
+    isClickable = true
 }

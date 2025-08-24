@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.view.WindowManager
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.projects.todos.R
@@ -14,7 +14,7 @@ import com.projects.todos.data.OnboardingItem
 import com.projects.todos.databinding.ActivityOnboardingBinding
 import com.projects.todos.utils.JsonParser
 
-class OnboardingActivity : AppCompatActivity() {
+class OnboardingActivity : BaseActivity() {
     
     private lateinit var binding: ActivityOnboardingBinding
     private lateinit var onboardingItems: List<OnboardingItem>
@@ -22,11 +22,17 @@ class OnboardingActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Set soft input mode for edge-to-edge friendly behavior
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+        
         binding = ActivityOnboardingBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
         setupOnboarding()
     }
+    
+
     
     private fun setupOnboarding() {
         // Parse onboarding items from JSON

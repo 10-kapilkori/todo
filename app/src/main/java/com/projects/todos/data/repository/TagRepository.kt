@@ -129,4 +129,47 @@ class TagRepository(private val tagDao: TagDao) {
             throw e
         }
     }
+    
+    suspend fun getTaskCountForTag(tagId: Int): Int {
+        AppLogger.methodEntry("TagRepository", "getTaskCountForTag", "tagId" to tagId)
+        return try {
+            val result = tagDao.getTaskCountForTag(tagId)
+            AppLogger.dbOperation("TagRepository", "SELECT COUNT", "tasks for tag", tagId)
+            AppLogger.methodExit("TagRepository", "getTaskCountForTag", result)
+            result
+        } catch (e: Exception) {
+            AppLogger.error("TagRepository", "getTaskCountForTag", e, "tagId: $tagId")
+            AppLogger.methodExit("TagRepository", "getTaskCountForTag", 0)
+            0
+        }
+    }
+    
+    suspend fun getTagCount(): Int {
+        AppLogger.methodEntry("TagRepository", "getTagCount")
+        return try {
+            val result = tagDao.getTagCount()
+            AppLogger.dbOperation("TagRepository", "SELECT COUNT", "tags", null)
+            AppLogger.methodExit("TagRepository", "getTagCount", result)
+            result
+        } catch (e: Exception) {
+            AppLogger.error("TagRepository", "getTagCount", e)
+            AppLogger.methodExit("TagRepository", "getTagCount", 0)
+            0
+        }
+    }
+    
+    suspend fun getAllTagsSync(): List<TagEntity> {
+        AppLogger.methodEntry("TagRepository", "getAllTagsSync")
+        return try {
+            val result = tagDao.getAllTagsSync()
+            AppLogger.dbOperation("TagRepository", "SELECT ALL", "tags", result.size)
+            AppLogger.d("TagRepository", "Retrieved tags: ${result.map { "${it.name} (ID: ${it.id})" }.joinToString(", ")}")
+            AppLogger.methodExit("TagRepository", "getAllTagsSync", result.size)
+            result
+        } catch (e: Exception) {
+            AppLogger.error("TagRepository", "getAllTagsSync", e)
+            AppLogger.methodExit("TagRepository", "getAllTagsSync", emptyList<TagEntity>())
+            emptyList()
+        }
+    }
 }

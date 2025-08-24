@@ -16,6 +16,8 @@ import com.projects.todos.databinding.BottomSheetTaskDetailBinding
 import com.projects.todos.utils.AppLogger
 import com.projects.todos.utils.BottomSheetManager
 import com.projects.todos.utils.DateTimeUtils
+import com.projects.todos.utils.ThemeUtils
+
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -61,7 +63,7 @@ class TaskDetailBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         AppLogger.methodEntry("TaskDetailBottomSheetFragment", "onViewCreated")
-        
+
         // Configure bottom sheet behavior
         dialog?.let { dialog ->
             val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
@@ -148,6 +150,12 @@ class TaskDetailBottomSheetFragment : BottomSheetDialogFragment() {
                 val tagColor = tag.colorHex.toColorInt()
                 val tagBackground = createTagBackground(tagColor)
                 taskDetailTag.background = tagBackground
+                taskDetailTag.setTextColor(
+                    ThemeUtils.getThemeColor(
+                        requireContext(),
+                        com.google.android.material.R.attr.colorOnSurfaceInverse
+                    )
+                )
             }
         }
         AppLogger.methodExit("TaskDetailBottomSheetFragment", "setupUI")

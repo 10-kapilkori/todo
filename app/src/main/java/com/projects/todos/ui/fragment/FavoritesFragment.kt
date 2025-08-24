@@ -16,6 +16,7 @@ import com.projects.todos.ui.fragment.CreateTaskBottomSheetFragment
 import com.projects.todos.ui.fragment.TaskDetailBottomSheetFragment
 import com.projects.todos.ui.viewmodel.TaskViewModel
 import com.projects.todos.utils.BottomSheetManager
+
 import kotlinx.coroutines.launch
 
 class FavoritesFragment : Fragment() {
@@ -74,6 +75,8 @@ class FavoritesFragment : Fragment() {
             showCreateTaskBottomSheet()
         }
     }
+    
+
 
     private fun showCreateTaskBottomSheet() {
         val bottomSheet = CreateTaskBottomSheetFragment.newInstance()

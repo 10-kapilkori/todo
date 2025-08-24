@@ -20,6 +20,8 @@
         <activity
             android:name=".ui.LauncherActivity"
             android:exported="true"
+            android:resizeableActivity="true"
+            android:enableOnBackInvokedCallback="true"
             android:theme="@style/Theme.Todo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,24 +33,48 @@
         <activity
             android:name=".ui.OnboardingActivity"
             android:exported="false"
+            android:resizeableActivity="true"
+            android:enableOnBackInvokedCallback="true"
             android:theme="@style/Theme.Todo" />
         
         <!-- Name Entry Activity -->
         <activity
             android:name=".ui.NameEntryActivity"
             android:exported="false"
+            android:resizeableActivity="true"
+            android:enableOnBackInvokedCallback="true"
             android:theme="@style/Theme.Todo" />
         
         <!-- Permissions Activity -->
         <activity
             android:name=".ui.PermissionsActivity"
             android:exported="false"
+            android:resizeableActivity="true"
+            android:enableOnBackInvokedCallback="true"
             android:theme="@style/Theme.Todo" />
         
         <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="false"
+            android:resizeableActivity="true"
+            android:enableOnBackInvokedCallback="true"
+            android:theme="@style/Theme.Todo" />
+        
+        <!-- Settings Activity -->
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false"
+            android:resizeableActivity="true"
+            android:enableOnBackInvokedCallback="true"
+            android:theme="@style/Theme.Todo" />
+        
+        <!-- Tag Management Activity -->
+        <activity
+            android:name=".ui.TagManagementActivity"
+            android:exported="false"
+            android:resizeableActivity="true"
+            android:enableOnBackInvokedCallback="true"
             android:theme="@style/Theme.Todo" />
             
     </application>

@@ -1,7 +1,6 @@
 package com.projects.todos.ui.fragment
 
 import android.os.Bundle
-import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,9 +21,8 @@ import com.projects.todos.ui.adapter.TaskAdapter
 import com.projects.todos.ui.viewmodel.TaskViewModel
 import com.projects.todos.utils.AppLogger
 import com.projects.todos.utils.BottomSheetManager
-import com.projects.todos.utils.KeyboardUtils
 import com.projects.todos.utils.ThemeUtils
-import kotlinx.coroutines.flow.first
+import com.projects.todos.utils.hideKeyboard
 import kotlinx.coroutines.launch
 
 class TasksFragment : Fragment() {
@@ -53,7 +51,6 @@ class TasksFragment : Fragment() {
 
         setupViewModel()
         setupRecyclerView()
-        setupWelcomeMessage()
         setupFab()
         setupQuickAdd()
         setupKeyboardHiding()
@@ -61,6 +58,7 @@ class TasksFragment : Fragment() {
         
         AppLogger.methodExit("TasksFragment", "onViewCreated")
     }
+
 
     private fun setupViewModel() {
         AppLogger.methodEntry("TasksFragment", "setupViewModel")
@@ -123,21 +121,6 @@ class TasksFragment : Fragment() {
         AppLogger.methodExit("TasksFragment", "setupRecyclerView")
     }
 
-    private fun setupWelcomeMessage() {
-        AppLogger.methodEntry("TasksFragment", "setupWelcomeMessage")
-        lifecycleScope.launch {
-            val userName = userPreferences.userName.first()
-            val welcomeMessage = if (!userName.isNullOrBlank()) {
-                getString(R.string.welcome_format, userName)
-            } else {
-                getString(R.string.welcome_default)
-            }
-            binding.welcomeText.text = welcomeMessage
-            AppLogger.d("TasksFragment", getString(R.string.welcome_message_set, welcomeMessage))
-        }
-        AppLogger.methodExit("TasksFragment", "setupWelcomeMessage")
-    }
-
     private fun setupFab() {
         AppLogger.methodEntry("TasksFragment", "setupFab")
         binding.fabAddTask.setOnClickListener {
@@ -193,17 +176,17 @@ class TasksFragment : Fragment() {
 
     private fun hideKeyboard() {
         AppLogger.uiOperation("TasksFragment", getString(R.string.hide_keyboard))
-        KeyboardUtils.hideKeyboard(requireContext())
+        requireActivity().hideKeyboard()
     }
 
     private fun hideKeyboardAndClearFocus() {
         AppLogger.uiOperation("TasksFragment", getString(R.string.hide_keyboard_clear_focus))
-        KeyboardUtils.hideKeyboardAndClearFocus(requireContext(), binding.quickAddEditText)
+        binding.quickAddEditText.hideKeyboard()
     }
 
     private fun clearFocus() {
         AppLogger.uiOperation("TasksFragment", getString(R.string.clear_focus))
-        KeyboardUtils.clearFocus(binding.quickAddEditText)
+        binding.quickAddEditText.clearFocus()
     }
 
     private fun addQuickTask() {

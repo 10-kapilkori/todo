@@ -3,10 +3,10 @@ package com.projects.todos.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.projects.todos.R
 import com.projects.todos.data.UserPreferences
@@ -15,10 +15,11 @@ import com.projects.todos.data.repository.TagRepository
 import com.projects.todos.data.repository.TaskRepository
 import com.projects.todos.data.service.DatabaseInitializationService
 import com.projects.todos.databinding.ActivityNameEntryBinding
-import com.projects.todos.utils.KeyboardUtils
+import com.projects.todos.utils.hideKeyboard
+import com.projects.todos.utils.setupKeyboardDismissOnOutsideClick
 import kotlinx.coroutines.launch
 
-class NameEntryActivity : AppCompatActivity() {
+class NameEntryActivity : BaseActivity() {
     
     private lateinit var binding: ActivityNameEntryBinding
     private lateinit var userPreferences: UserPreferences
@@ -26,6 +27,10 @@ class NameEntryActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Set soft input mode for edge-to-edge friendly behavior
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+        
         binding = ActivityNameEntryBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
@@ -38,6 +43,12 @@ class NameEntryActivity : AppCompatActivity() {
         databaseInitializationService = DatabaseInitializationService(tagRepository, taskRepository)
         
         setupUI()
+        setupKeyboardDismiss()
+    }
+    
+    private fun setupKeyboardDismiss() {
+        // Setup keyboard dismiss on outside click
+        binding.root.setupKeyboardDismissOnOutsideClick()
     }
     
     private fun setupUI() {
@@ -71,15 +82,15 @@ class NameEntryActivity : AppCompatActivity() {
     }
     
     private fun hideKeyboard() {
-        KeyboardUtils.hideKeyboard(this)
+        this.hideKeyboard()
     }
     
     private fun hideKeyboardAndClearFocus() {
-        KeyboardUtils.hideKeyboardAndClearFocus(this, binding.nameEditText)
+        binding.nameEditText.hideKeyboard()
     }
     
     private fun clearFocus() {
-        KeyboardUtils.clearFocus(binding.nameEditText)
+        binding.nameEditText.clearFocus()
     }
     
     private fun saveUserName() {

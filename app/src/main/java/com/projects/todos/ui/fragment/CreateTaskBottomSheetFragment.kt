@@ -23,10 +23,16 @@ import com.projects.todos.utils.AppLogger
 import com.projects.todos.utils.AppLogger.getString
 import com.projects.todos.utils.BottomSheetManager
 import com.projects.todos.utils.DateTimeUtils
-import com.projects.todos.utils.KeyboardUtils
+
 import com.projects.todos.utils.NotificationManager
 import com.projects.todos.utils.ThemeUtils
+
+import com.projects.todos.utils.hideKeyboard
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import java.util.Calendar
 
 class CreateTaskBottomSheetFragment : BottomSheetDialogFragment() {
@@ -50,6 +56,9 @@ class CreateTaskBottomSheetFragment : BottomSheetDialogFragment() {
     // Callbacks for parent fragment/activity
     var onTaskCreated: ((TaskEntity) -> Unit)? = null
     var onTaskUpdated: ((TaskEntity) -> Unit)? = null
+
+    // Custom coroutine scope for better lifecycle management
+    private val fragmentScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     companion object {
         private const val ARG_TASK_ID = "task_id"
@@ -91,6 +100,8 @@ class CreateTaskBottomSheetFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         AppLogger.methodEntry("CreateTaskBottomSheetFragment", "onViewCreated")
 
+
+        
         // Configure bottom sheet behavior
         dialog?.let { dialog ->
             val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
@@ -118,6 +129,8 @@ class CreateTaskBottomSheetFragment : BottomSheetDialogFragment() {
             "CreateTaskBottomSheetFragment",
             getString(R.string.bottom_sheet_dismissed)
         )
+        // Cancel all coroutines when the bottom sheet is dismissed
+        fragmentScope.cancel()
         // Notify the manager that this bottom sheet is dismissed
         BottomSheetManager.removeBottomSheet(TAG)
     }
@@ -176,7 +189,7 @@ class CreateTaskBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun hideKeyboard() {
         AppLogger.uiOperation("CreateTaskBottomSheetFragment", getString(R.string.hide_keyboard))
-        KeyboardUtils.hideKeyboard(requireContext())
+        requireActivity().hideKeyboard()
     }
 
     private fun hideKeyboardAndClearFocus() {
@@ -185,13 +198,14 @@ class CreateTaskBottomSheetFragment : BottomSheetDialogFragment() {
             getString(R.string.hide_keyboard_clear_focus)
         )
         // Hide keyboard and clear focus from both input fields in one operation
-        KeyboardUtils.hideKeyboardAndClearFocus(requireContext(), binding.titleEditText, binding.descriptionEditText)
+        binding.titleEditText.hideKeyboard()
+        binding.descriptionEditText.hideKeyboard()
     }
 
     private fun clearFocus() {
         AppLogger.uiOperation("CreateTaskBottomSheetFragment", getString(R.string.clear_focus))
-        KeyboardUtils.clearFocus(binding.titleEditText)
-        KeyboardUtils.clearFocus(binding.descriptionEditText)
+        binding.titleEditText.clearFocus()
+        binding.descriptionEditText.clearFocus()
     }
 
     private fun checkEditMode() {
@@ -213,7 +227,7 @@ class CreateTaskBottomSheetFragment : BottomSheetDialogFragment() {
             "loadTaskForEdit",
             "taskId" to taskId
         )
-        lifecycleScope.launch {
+        fragmentScope.launch {
             try {
                 val taskWithTag = taskRepository.getTaskWithTagById(taskId)
                 if (taskWithTag != null) {
@@ -500,7 +514,7 @@ class CreateTaskBottomSheetFragment : BottomSheetDialogFragment() {
     private fun loadTags() {
         AppLogger.methodEntry("CreateTaskBottomSheetFragment", "loadTags")
         if (isAdded && _binding != null) {
-            lifecycleScope.launch {
+            fragmentScope.launch {
                 try {
                     tagRepository.getAllTags().collect { tags ->
                         if (isAdded && _binding != null) {
@@ -512,8 +526,10 @@ class CreateTaskBottomSheetFragment : BottomSheetDialogFragment() {
                         }
                     }
                 } catch (e: Exception) {
-                    AppLogger.error("CreateTaskBottomSheetFragment", "loadTags", e)
-                    showError(getString(R.string.failed_to_load_tags, e.message))
+                    if (isAdded && _binding != null) {
+                        AppLogger.error("CreateTaskBottomSheetFragment", "loadTags", e)
+                        showError(getString(R.string.failed_to_load_tags, e.message))
+                    }
                 }
             }
         }
@@ -621,7 +637,7 @@ class CreateTaskBottomSheetFragment : BottomSheetDialogFragment() {
             return
         }
 
-        lifecycleScope.launch {
+        fragmentScope.launch {
             try {
                 val dueDateTime = getDueDateTime()
 
@@ -703,7 +719,7 @@ class CreateTaskBottomSheetFragment : BottomSheetDialogFragment() {
             return
         }
 
-        lifecycleScope.launch {
+        fragmentScope.launch {
             try {
                 val dueDateTime = getDueDateTime()
 
@@ -781,6 +797,8 @@ class CreateTaskBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         AppLogger.d("CreateTaskBottomSheetFragment", getString(R.string.on_destroy_view))
+        // Cancel all coroutines when the view is destroyed
+        fragmentScope.cancel()
         _binding = null
     }
 }

@@ -4,10 +4,10 @@ import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.projects.todos.MainActivity
 import com.projects.todos.R
@@ -15,7 +15,7 @@ import com.projects.todos.data.UserPreferences
 import com.projects.todos.databinding.ActivityPermissionsBinding
 import kotlinx.coroutines.launch
 
-class PermissionsActivity : AppCompatActivity() {
+class PermissionsActivity : BaseActivity() {
 
     private lateinit var binding: ActivityPermissionsBinding
     private lateinit var userPreferences: UserPreferences
@@ -42,6 +42,10 @@ class PermissionsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Set soft input mode for edge-to-edge friendly behavior
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+        
         binding = ActivityPermissionsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -49,6 +53,8 @@ class PermissionsActivity : AppCompatActivity() {
 
         setupUI()
     }
+    
+
 
     private fun setupUI() {
         binding.requestPermissionButton.setOnClickListener {
