@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    
+    <!-- Background circle -->
+    <path
+        android:fillColor="?attr/colorSurfaceVariant"
+        android:pathData="M60,60m-50,0a50,50 0,1 1,100 0a50,50 0,1 1,-100 0" />
+    
+    <!-- Task list icon -->
+    <path
+        android:fillColor="?attr/colorOnSurfaceVariant"
+        android:pathData="M40,35h40v4h-40z" />
+    <path
+        android:fillColor="?attr/colorOnSurfaceVariant"
+        android:pathData="M40,45h30v4h-30z" />
+    <path
+        android:fillColor="?attr/colorOnSurfaceVariant"
+        android:pathData="M40,55h35v4h-35z" />
+    <path
+        android:fillColor="?attr/colorOnSurfaceVariant"
+        android:pathData="M40,65h25v4h-25z" />
+    
+    <!-- Checkbox -->
+    <path
+        android:fillColor="?attr/colorPrimary"
+        android:pathData="M45,40h10v10h-10z" />
+    <path
+        android:fillColor="?attr/colorOnPrimary"
+        android:pathData="M48,45l2,2l4,-4l1,1l-5,5l-3,-3z" />
+    
+    <!-- Plus sign for adding -->
+    <path
+        android:fillColor="?attr/colorPrimary"
+        android:pathData="M75,75h10v4h-10z" />
+    <path
+        android:fillColor="?attr/colorPrimary"
+        android:pathData="M73,77h14v2h-14z" />
+    
+    <!-- Decorative dots -->
+    <path
+        android:fillColor="?attr/colorPrimary"
+        android:pathData="M25,25m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0" />
+    <path
+        android:fillColor="?attr/colorSecondary"
+        android:pathData="M95,30m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0" />
+    <path
+        android:fillColor="?attr/colorTertiary"
+        android:pathData="M20,90m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0" />
+    <path
+        android:fillColor="?attr/colorPrimary"
+        android:pathData="M100,85m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0" />
+        
+</vector>

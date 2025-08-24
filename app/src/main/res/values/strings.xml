@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Todo</string>
+    
+    <!-- Onboarding -->
+    <string name="get_started">Get Started</string>
+    <string name="onboarding_image">Onboarding Image</string>
+    
+    <!-- Name Entry -->
+    <string name="welcome_title">Welcome to Todo!</string>
+    <string name="welcome_subtitle">Let\'s get to know you better</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="continue_text">Continue</string>
+    <string name="user_profile">User Profile</string>
+    
+    <!-- Permissions -->
+    <string name="notification_permission_title">Stay Notified</string>
+    <string name="notification_permission_description">Enable notifications to get reminders for your important tasks and never miss a deadline.</string>
+    <string name="notification_permission">Notification Permission</string>
+    <string name="enable_notifications">Enable Notifications</string>
+    <string name="maybe_later">Maybe Later</string>
+    
+    <!-- Messages -->
+    <string name="name_required">Please enter your name</string>
+    <string name="permission_denied_warning">You can enable notifications later in settings</string>
+    <string name="permission_required_title">Permission Required</string>
+    <string name="permission_required_message">Without notification permission, you won\'t receive important reminders for your tasks. This may affect your productivity.</string>
+    <string name="skip_notifications_title">Skip Notifications?</string>
+    <string name="skip_notifications_message">You can enable notifications later in settings, but you\'ll miss important task reminders.</string>
+    <string name="try_again">Try Again</string>
+    <string name="enable_now">Enable Now</string>
+    <string name="skip">Skip</string>
+    
+    <!-- Dashboard -->
+    <string name="tasks">Tasks</string>
+    <string name="favorites">Favorites</string>
+    <string name="all">All</string>
+    <string name="favorite_tasks">Favorite Tasks</string>
+</resources>

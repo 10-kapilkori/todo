@@ -1,0 +1,75 @@
+{
+  "tags": [
+    {
+      "name": "General",
+      "colorHex": "#4CAF50",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "name": "Work",
+      "colorHex": "#2196F3",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "name": "School",
+      "colorHex": "#FFC107",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "name": "Personal",
+      "colorHex": "#E91E63",
+      "createdAt": 0,
+      "updatedAt": 0
+    }
+  ],
+  "tasks": [
+    {
+      "title": "Plan your day",
+      "description": "Write down the top 3 things you want to accomplish today.",
+      "isCompleted": false,
+      "isFavorite": true,
+      "tagName": "General",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "title": "Check work emails",
+      "description": "Go through your inbox and respond to any pending important emails.",
+      "isCompleted": false,
+      "isFavorite": false,
+      "tagName": "Work",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "title": "Complete assignment",
+      "description": "Work on your school/college assignment due this week.",
+      "isCompleted": false,
+      "isFavorite": false,
+      "tagName": "School",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "title": "Go for a 20 min walk",
+      "description": "Take a short walk to refresh your mind and body.",
+      "isCompleted": false,
+      "isFavorite": false,
+      "tagName": "Personal",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "title": "Read 10 pages",
+      "description": "Pick up a book you like and read at least 10 pages.",
+      "isCompleted": false,
+      "isFavorite": false,
+      "tagName": "Personal",
+      "createdAt": 0,
+      "updatedAt": 0
+    }
+  ]
+}

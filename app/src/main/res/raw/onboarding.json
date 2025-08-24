@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Organize Your Tasks",
+    "description": "Easily add, edit, and track all your daily tasks in one place.",
+    "image": "onboarding_1"
+  },
+  {
+    "title": "Plan Ahead",
+    "description": "Schedule tasks for later and set recurring to-dos with ease.",
+    "image": "onboarding_2"
+  },
+  {
+    "title": "Track Progress",
+    "description": "View streaks, stats, and stay motivated as you complete tasks.",
+    "image": "onboarding_3"
+  },
+  {
+    "title": "Stay Notified",
+    "description": "Get reminders and never miss an important task again.",
+    "image": "onboarding_4"
+  }
+]

@@ -1,0 +1,193 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Todo" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/design_default_color_primary</item>
+        <item name="colorOnPrimary">@color/design_default_color_on_primary</item>
+        <item name="colorPrimaryContainer">@color/design_default_color_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/design_default_color_on_primary_container</item>
+        
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/design_default_color_secondary</item>
+        <item name="colorOnSecondary">@color/design_default_color_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/design_default_color_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/design_default_color_on_secondary_container</item>
+        
+        <!-- Tertiary brand color. -->
+        <item name="colorTertiary">@color/design_default_color_tertiary</item>
+        <item name="colorOnTertiary">@color/design_default_color_on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/design_default_color_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/design_default_color_on_tertiary_container</item>
+        
+        <!-- Error colors -->
+        <item name="colorError">@color/design_default_color_error</item>
+        <item name="colorOnError">@color/design_default_color_on_error</item>
+        <item name="colorErrorContainer">@color/design_default_color_error_container</item>
+        <item name="colorOnErrorContainer">@color/design_default_color_on_error_container</item>
+        
+        <!-- Surface colors -->
+        <item name="colorSurface">@color/design_default_color_surface</item>
+        <item name="colorOnSurface">@color/design_default_color_on_surface</item>
+        <item name="colorSurfaceVariant">@color/design_default_color_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/design_default_color_on_surface_variant</item>
+        
+        <!-- Background colors -->
+        <item name="android:colorBackground">@color/design_default_color_background</item>
+        <item name="colorOnBackground">@color/design_default_color_on_background</item>
+        
+        <!-- Outline colors -->
+        <item name="colorOutline">@color/design_default_color_outline</item>
+        <item name="colorOutlineVariant">@color/design_default_color_outline_variant</item>
+        
+        <!-- Status bar and navigation bar -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        
+        <!-- Typography -->
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.Todo.HeadlineLarge</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.Todo.HeadlineMedium</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Todo.HeadlineSmall</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.Todo.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.Todo.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.Todo.TitleSmall</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.Todo.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.Todo.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.Todo.BodySmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Todo.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.Todo.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.Todo.LabelSmall</item>
+    </style>
+
+    <style name="Theme.Todo" parent="Base.Theme.Todo" />
+    
+    <!-- Typography Styles -->
+    <style name="TextAppearance.Todo.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:textSize">32sp</item>
+        <item name="android:textColor">@color/design_default_color_on_background</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+    
+    <style name="TextAppearance.Todo.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textSize">28sp</item>
+        <item name="android:textColor">@color/design_default_color_on_background</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+    
+    <style name="TextAppearance.Todo.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/design_default_color_on_background</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+    
+    <style name="TextAppearance.Todo.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/design_default_color_on_background</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+    
+    <style name="TextAppearance.Todo.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+    
+    <style name="TextAppearance.Todo.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+    
+    <style name="TextAppearance.Todo.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
+    
+    <style name="TextAppearance.Todo.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
+    
+    <style name="TextAppearance.Todo.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
+    
+    <style name="TextAppearance.Todo.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+    
+    <style name="TextAppearance.Todo.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+    
+    <style name="TextAppearance.Todo.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+    
+    <!-- Component Styles -->
+    <style name="Widget.Todo.Chip" parent="Widget.Material3.Chip.Filter">
+        <item name="chipCornerRadius">20dp</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipStrokeColor">?attr/colorPrimary</item>
+        <item name="chipBackgroundColor">?attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorSurface</item>
+        <item name="rippleColor">?attr/colorPrimaryContainer</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:checkable">true</item>
+        <item name="checkedIconVisible">false</item>
+    </style>
+    
+    <style name="Widget.Todo.Chip.Selected" parent="Widget.Todo.Chip">
+        <item name="chipBackgroundColor">?attr/colorPrimaryContainer</item>
+        <item name="android:textColor">?attr/colorOnPrimaryContainer</item>
+        <item name="chipStrokeColor">?attr/colorPrimaryContainer</item>
+    </style>
+    
+    <style name="Widget.Todo.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
+        <item name="strokeColor">?attr/colorOutlineVariant</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+    
+    <style name="Widget.Todo.FloatingActionButton" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="backgroundTint">?attr/colorPrimary</item>
+        <item name="tint">?attr/colorOnPrimary</item>
+        <item name="elevation">6dp</item>
+        <item name="pressedTranslationZ">12dp</item>
+    </style>
+    
+    <style name="Widget.Todo.BottomSheet" parent="Widget.Material3.BottomSheet">
+        <item name="shapeAppearance">@style/ShapeAppearance.Todo.LargeComponent</item>
+        <item name="backgroundTint">?attr/colorSurface</item>
+    </style>
+    
+    <!-- Shape Styles -->
+    <style name="ShapeAppearance.Todo.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+    
+    <style name="ShapeAppearance.Todo.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+    
+    <style name="ShapeAppearance.Todo.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+</resources>

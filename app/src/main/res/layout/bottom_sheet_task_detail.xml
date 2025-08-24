@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bottom_sheet_background">
+
+    <!-- Handle bar -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="20dp"
+        android:background="?attr/colorOnSurfaceVariant"
+        android:alpha="0.4" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingBottom="24dp">
+
+    <!-- Header with title and overflow menu -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:id="@+id/taskDetailTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/taskDetailOverflow"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:textColor="?attr/colorOnSurface"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="Task Title Goes Here" />
+
+        <ImageView
+            android:id="@+id/taskDetailOverflow"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_more_vert"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="More options"
+            android:padding="4dp"
+            app:tint="?attr/colorOnSurface" />
+
+    </RelativeLayout>
+
+    <!-- Description -->
+    <TextView
+        android:id="@+id/taskDetailDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:lineSpacingExtra="4dp"
+        tools:text="This is a detailed description of the task that provides more context about what needs to be done." />
+
+    <!-- Created Date -->
+    <TextView
+        android:id="@+id/taskDetailCreatedDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:drawableStart="@drawable/ic_calendar"
+        android:drawablePadding="12dp"
+        app:drawableTint="?attr/colorOnSurfaceVariant"
+        tools:text="Created on 15 Dec 2024" />
+
+    <!-- Tag -->
+    <TextView
+        android:id="@+id/taskDetailTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:textAppearance="?attr/textAppearanceLabelMedium"
+        android:textColor="?attr/colorSurfaceInverse"
+        android:background="@drawable/tag_background"
+        tools:text="Work" />
+
+    </LinearLayout>
+
+</LinearLayout>
