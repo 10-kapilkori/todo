@@ -35,4 +35,7 @@
     <color name="design_default_color_outline_variant">#FFCAC4D0</color>
     <color name="design_default_color_scrim">#FF000000</color>
     <color name="gray">#FF757575</color>
+    
+    <!-- Custom Colors -->
+    <color name="error">#FFBA1A1A</color>
 </resources>

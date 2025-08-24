@@ -20,6 +20,7 @@ import com.projects.todos.data.repository.TaskRepository
 import com.projects.todos.databinding.FragmentTasksBinding
 import com.projects.todos.ui.adapter.TaskAdapter
 import com.projects.todos.ui.viewmodel.TaskViewModel
+import com.projects.todos.utils.AppLogger
 import com.projects.todos.utils.BottomSheetManager
 import com.projects.todos.utils.KeyboardUtils
 import com.projects.todos.utils.ThemeUtils
@@ -40,12 +41,15 @@ class TasksFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        AppLogger.methodEntry("TasksFragment", "onCreateView")
         _binding = FragmentTasksBinding.inflate(inflater, container, false)
+        AppLogger.methodExit("TasksFragment", "onCreateView")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        AppLogger.methodEntry("TasksFragment", "onViewCreated")
 
         setupViewModel()
         setupRecyclerView()
@@ -54,25 +58,34 @@ class TasksFragment : Fragment() {
         setupQuickAdd()
         setupKeyboardHiding()
         observeData()
+        
+        AppLogger.methodExit("TasksFragment", "onViewCreated")
     }
 
     private fun setupViewModel() {
+        AppLogger.methodEntry("TasksFragment", "setupViewModel")
         val database = TodoDatabase.getDatabase(requireContext())
         val taskRepository = TaskRepository(database.taskDao())
         val tagRepository = TagRepository(database.tagDao())
         taskViewModel = TaskViewModel(taskRepository, tagRepository)
         userPreferences = UserPreferences(requireContext())
+        AppLogger.d("TasksFragment", getString(R.string.view_model_initialized))
+        AppLogger.methodExit("TasksFragment", "setupViewModel")
     }
 
     private fun setupRecyclerView() {
+        AppLogger.methodEntry("TasksFragment", "setupRecyclerView")
         taskAdapter = TaskAdapter()
         taskAdapter.setOnTaskCompletionChangedListener { taskId, isCompleted ->
+            AppLogger.uiOperation("TasksFragment", getString(R.string.task_completion_changed, taskId, isCompleted))
             taskViewModel.toggleTaskCompletion(taskId, isCompleted)
         }
         taskAdapter.setOnTaskFavoriteChangedListener { taskId, isFavorite ->
+            AppLogger.uiOperation("TasksFragment", getString(R.string.task_favorite_changed, taskId, isFavorite))
             taskViewModel.toggleTaskFavorite(taskId, isFavorite)
         }
         taskAdapter.setOnTaskClickedListener { taskWithTag ->
+            AppLogger.uiOperation("TasksFragment", getString(R.string.task_clicked, taskWithTag.task.id))
             showTaskDetailBottomSheet(taskWithTag)
         }
         binding.tasksRecyclerView.apply {
@@ -105,23 +118,30 @@ class TasksFragment : Fragment() {
                 totalBottomPadding
             )
             binding.tasksRecyclerView.clipToPadding = false
+            AppLogger.d("TasksFragment", getString(R.string.recycler_view_padding, totalBottomPadding))
         }
+        AppLogger.methodExit("TasksFragment", "setupRecyclerView")
     }
 
     private fun setupWelcomeMessage() {
+        AppLogger.methodEntry("TasksFragment", "setupWelcomeMessage")
         lifecycleScope.launch {
             val userName = userPreferences.userName.first()
             val welcomeMessage = if (!userName.isNullOrBlank()) {
-                "Welcome, $userName! 🎉"
+                getString(R.string.welcome_format, userName)
             } else {
-                "Welcome to Todo! 🎉"
+                getString(R.string.welcome_default)
             }
             binding.welcomeText.text = welcomeMessage
+            AppLogger.d("TasksFragment", getString(R.string.welcome_message_set, welcomeMessage))
         }
+        AppLogger.methodExit("TasksFragment", "setupWelcomeMessage")
     }
 
     private fun setupFab() {
+        AppLogger.methodEntry("TasksFragment", "setupFab")
         binding.fabAddTask.setOnClickListener {
+            AppLogger.uiOperation("TasksFragment", getString(R.string.fab_clicked))
             // Add scale animation on click
             binding.fabAddTask.animate()
                 .scaleX(0.9f)
@@ -139,44 +159,55 @@ class TasksFragment : Fragment() {
                 }
                 .start()
         }
+        AppLogger.methodExit("TasksFragment", "setupFab")
     }
 
     private fun setupQuickAdd() {
+        AppLogger.methodEntry("TasksFragment", "setupQuickAdd")
         // Handle Add button click
         binding.quickAddButton.setOnClickListener {
+            AppLogger.uiOperation("TasksFragment", getString(R.string.quick_add_button_clicked))
             addQuickTask()
         }
 
         // Handle Enter key press
         binding.quickAddEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                AppLogger.uiOperation("TasksFragment", getString(R.string.quick_add_enter_pressed))
                 addQuickTask()
                 return@setOnEditorActionListener true
             }
             false
         }
+        AppLogger.methodExit("TasksFragment", "setupQuickAdd")
     }
 
     private fun setupKeyboardHiding() {
+        AppLogger.methodEntry("TasksFragment", "setupKeyboardHiding")
         // Set up root layout to handle outside touches
         binding.root.setOnClickListener {
             hideKeyboardAndClearFocus()
         }
+        AppLogger.methodExit("TasksFragment", "setupKeyboardHiding")
     }
 
     private fun hideKeyboard() {
+        AppLogger.uiOperation("TasksFragment", getString(R.string.hide_keyboard))
         KeyboardUtils.hideKeyboard(requireContext())
     }
 
     private fun hideKeyboardAndClearFocus() {
+        AppLogger.uiOperation("TasksFragment", getString(R.string.hide_keyboard_clear_focus))
         KeyboardUtils.hideKeyboardAndClearFocus(requireContext(), binding.quickAddEditText)
     }
 
     private fun clearFocus() {
+        AppLogger.uiOperation("TasksFragment", getString(R.string.clear_focus))
         KeyboardUtils.clearFocus(binding.quickAddEditText)
     }
 
     private fun addQuickTask() {
+        AppLogger.methodEntry("TasksFragment", "addQuickTask")
         val taskTitle = binding.quickAddEditText.text.toString().trim()
 
         if (taskTitle.isNotEmpty()) {
@@ -189,28 +220,38 @@ class TasksFragment : Fragment() {
                 // Clear focus
                 clearFocus()
                 // Show quick feedback with better styling
-                showQuickFeedback("Task added! ✨")
+                showQuickFeedback(getString(R.string.task_added))
+                AppLogger.d("TasksFragment", getString(R.string.quick_task_added, taskTitle))
+            } else {
+                AppLogger.w("TasksFragment", getString(R.string.failed_add_quick_task, taskTitle))
             }
+        } else {
+            AppLogger.w("TasksFragment", getString(R.string.cannot_add_empty_task))
         }
+        AppLogger.methodExit("TasksFragment", "addQuickTask")
     }
 
     private fun showQuickFeedback(message: String) {
+        AppLogger.uiOperation("TasksFragment", getString(R.string.show_quick_feedback, message))
         val snackbar = com.google.android.material.snackbar.Snackbar.make(
             binding.root,
             message,
             com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
         )
-        snackbar.setAction("Undo") {
+        snackbar.setAction(getString(R.string.undo)) {
             // TODO: Implement undo functionality
+            AppLogger.uiOperation("TasksFragment", getString(R.string.undo_clicked))
         }
         snackbar.show()
     }
 
     private fun showCreateTaskBottomSheet() {
+        AppLogger.methodEntry("TasksFragment", "showCreateTaskBottomSheet")
         val bottomSheet = CreateTaskBottomSheetFragment.newInstance()
 
         bottomSheet.onTaskCreated = { task ->
             // Task was created successfully
+            AppLogger.d("TasksFragment", getString(R.string.task_created_callback, task.id))
             // The ViewModel will automatically update the UI through the Flow
         }
 
@@ -220,13 +261,16 @@ class TasksFragment : Fragment() {
             bottomSheet,
             CreateTaskBottomSheetFragment.TAG
         )
+        AppLogger.methodExit("TasksFragment", "showCreateTaskBottomSheet")
     }
 
     private fun observeData() {
+        AppLogger.methodEntry("TasksFragment", "observeData")
         // Observe tags and create chips dynamically
         lifecycleScope.launch {
             taskViewModel.tags.collect { tags ->
                 createTagChips(tags)
+                AppLogger.d("TasksFragment", getString(R.string.tags_updated, tags.size))
             }
         }
 
@@ -234,6 +278,7 @@ class TasksFragment : Fragment() {
         lifecycleScope.launch {
             taskViewModel.tasks.collect { tasks ->
                 taskAdapter.submitList(tasks)
+                AppLogger.d("TasksFragment", getString(R.string.tasks_updated, tasks.size))
                 // Force update empty state with a slight delay to ensure UI is ready
                 binding.tasksRecyclerView.post {
                     updateEmptyState(tasks.isEmpty())
@@ -246,17 +291,20 @@ class TasksFragment : Fragment() {
             taskViewModel.selectedTagName.collect { tagName ->
                 updateEmptyStateMessages(tagName)
                 updateQuickAddHint(tagName)
+                AppLogger.d("TasksFragment", getString(R.string.selected_tag_updated, tagName))
             }
         }
+        AppLogger.methodExit("TasksFragment", "observeData")
     }
 
     private fun createTagChips(tags: List<TagEntity>) {
+        AppLogger.methodEntry("TasksFragment", "createTagChips", "tagCount" to tags.size)
         // Clear all existing chips
         val chipGroup = binding.filterChipGroup
         chipGroup.removeAllViews()
 
         // Create "All" chip first
-        val allChip = createStyledChip("All").apply {
+        val allChip = createStyledChip(getString(R.string.all)).apply {
             setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     // Apply theme colors
@@ -272,6 +320,7 @@ class TasksFragment : Fragment() {
                         }
                     }
                     taskViewModel.setSelectedTag(null, null)
+                    AppLogger.uiOperation("TasksFragment", getString(R.string.all_tag_selected))
                 } else {
                     // Prevent deselection - keep it checked without changing theme
                     ThemeUtils.applyChipThemeColors(this, false)
@@ -302,6 +351,7 @@ class TasksFragment : Fragment() {
                         }
                         
                         taskViewModel.setSelectedTag(tag.id, tag.name)
+                        AppLogger.uiOperation("TasksFragment", getString(R.string.tag_selected_ui, tag.name, tag.id))
                     } else {
                         // Allow deselection when another chip is selected
                         ThemeUtils.applyChipThemeColors(this, false)
@@ -314,8 +364,10 @@ class TasksFragment : Fragment() {
             if (tag.name == "General") {
                 chip.isChecked = true
                 taskViewModel.setSelectedTag(tag.id, tag.name)
+                AppLogger.d("TasksFragment", getString(R.string.auto_selected_general_ui))
             }
         }
+        AppLogger.methodExit("TasksFragment", "createTagChips")
     }
 
     private fun createStyledChip(text: String): Chip {
@@ -323,14 +375,17 @@ class TasksFragment : Fragment() {
     }
 
     private fun showTaskDetailBottomSheet(taskWithTag: TaskWithTag) {
+        AppLogger.methodEntry("TasksFragment", "showTaskDetailBottomSheet", "taskId" to taskWithTag.task.id)
         val bottomSheet = TaskDetailBottomSheetFragment.newInstance(taskWithTag)
 
         bottomSheet.onDeleteTask = { task ->
-            taskViewModel.deleteTask(task.task.id)
+            AppLogger.uiOperation("TasksFragment", getString(R.string.task_delete_requested, task.task.id))
+            taskViewModel.deleteTask(task.task.id, requireContext())
         }
 
         bottomSheet.onTaskUpdated = { updatedTask ->
             // Task was updated successfully
+            AppLogger.d("TasksFragment", getString(R.string.task_updated_callback, updatedTask.id))
             // The ViewModel will automatically update the UI through the Flow
         }
 
@@ -340,9 +395,11 @@ class TasksFragment : Fragment() {
             bottomSheet,
             TaskDetailBottomSheetFragment.TAG
         )
+        AppLogger.methodExit("TasksFragment", "showTaskDetailBottomSheet")
     }
 
     private fun updateEmptyState(isEmpty: Boolean) {
+        AppLogger.methodEntry("TasksFragment", "updateEmptyState", "isEmpty" to isEmpty)
         // Cancel any ongoing animations to prevent conflicts
         binding.tasksRecyclerView.animate().cancel()
         binding.emptyStateLayout.animate().cancel()
@@ -363,6 +420,7 @@ class TasksFragment : Fragment() {
                             .start()
                     }
                     .start()
+                AppLogger.uiOperation("TasksFragment", getString(R.string.empty_state_shown))
             }
         } else {
             // Show task list
@@ -380,35 +438,44 @@ class TasksFragment : Fragment() {
                             .start()
                     }
                     .start()
+                AppLogger.uiOperation("TasksFragment", getString(R.string.task_list_shown))
             }
         }
+        AppLogger.methodExit("TasksFragment", "updateEmptyState")
     }
 
     private fun updateEmptyStateMessages(tagName: String?) {
+        AppLogger.methodEntry("TasksFragment", "updateEmptyStateMessages", "tagName" to tagName)
         val title = when (tagName) {
-            null -> "No tasks found"
-            else -> "No $tagName tasks yet"
+            null -> getString(R.string.no_tasks_found)
+            else -> getString(R.string.no_tag_tasks_format, tagName)
         }
 
         val description = when (tagName) {
-            null -> "No tasks available yet."
-            else -> "No tasks available in this category yet."
+            null -> getString(R.string.no_tasks_available)
+            else -> getString(R.string.no_tasks_category)
         }
 
         binding.emptyStateTitle.text = title
         binding.emptyStateDescription.text = description
+        AppLogger.d("TasksFragment", getString(R.string.empty_state_messages_updated, title))
+        AppLogger.methodExit("TasksFragment", "updateEmptyStateMessages")
     }
 
     private fun updateQuickAddHint(tagName: String?) {
+        AppLogger.methodEntry("TasksFragment", "updateQuickAddHint", "tagName" to tagName)
         val hintText = when (tagName) {
-            null -> "Type a task..."
-            else -> "Add to $tagName..."
+            null -> getString(R.string.type_task)
+            else -> getString(R.string.add_to_format, tagName)
         }
         binding.quickAddEditText.hint = hintText
+        AppLogger.d("TasksFragment", getString(R.string.quick_add_hint_updated, hintText))
+        AppLogger.methodExit("TasksFragment", "updateQuickAddHint")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        AppLogger.d("TasksFragment", getString(R.string.on_destroy_view))
         // Clean up bottom sheets when fragment is destroyed
         BottomSheetManager.clearAllBottomSheets()
         _binding = null

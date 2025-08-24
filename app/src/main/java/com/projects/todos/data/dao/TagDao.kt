@@ -28,6 +28,9 @@ interface TagDao {
     @Delete
     suspend fun deleteTag(tag: TagEntity)
     
+    @Query("DELETE FROM tags WHERE id = :tagId")
+    suspend fun deleteTagById(tagId: Int)
+    
     @Query("DELETE FROM tags")
     suspend fun deleteAllTags()
 }

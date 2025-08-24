@@ -7,16 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.projects.todos.R
+import com.projects.todos.data.entity.TaskEntity
 import com.projects.todos.data.relation.TaskWithTag
 import com.projects.todos.databinding.BottomSheetTaskDetailBinding
+import com.projects.todos.utils.AppLogger
 import com.projects.todos.utils.BottomSheetManager
+import com.projects.todos.utils.DateTimeUtils
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import androidx.core.graphics.toColorInt
-import com.projects.todos.data.entity.TaskEntity
 
 class TaskDetailBottomSheetFragment : BottomSheetDialogFragment() {
 
@@ -34,11 +36,14 @@ class TaskDetailBottomSheetFragment : BottomSheetDialogFragment() {
         const val TAG = "TaskDetailBottomSheet"
         
         fun newInstance(taskWithTag: TaskWithTag): TaskDetailBottomSheetFragment {
-            return TaskDetailBottomSheetFragment().apply {
+            AppLogger.methodEntry("TaskDetailBottomSheetFragment", "newInstance")
+            val fragment = TaskDetailBottomSheetFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_TASK_WITH_TAG, taskWithTag)
                 }
             }
+            AppLogger.methodExit("TaskDetailBottomSheetFragment", "newInstance")
+            return fragment
         }
     }
 
@@ -47,12 +52,15 @@ class TaskDetailBottomSheetFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        AppLogger.methodEntry("TaskDetailBottomSheetFragment", "onCreateView")
         _binding = BottomSheetTaskDetailBinding.inflate(inflater, container, false)
+        AppLogger.methodExit("TaskDetailBottomSheetFragment", "onCreateView")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        AppLogger.methodEntry("TaskDetailBottomSheetFragment", "onViewCreated")
         
         // Configure bottom sheet behavior
         dialog?.let { dialog ->
@@ -67,18 +75,24 @@ class TaskDetailBottomSheetFragment : BottomSheetDialogFragment() {
         
         // Get task data from arguments
         taskWithTag = arguments?.getParcelable(ARG_TASK_WITH_TAG)
-        
+
         setupUI()
         setupClickListeners()
+        AppLogger.methodExit("TaskDetailBottomSheetFragment", "onViewCreated")
     }
 
     override fun onDismiss(dialog: android.content.DialogInterface) {
         super.onDismiss(dialog)
+        AppLogger.uiOperation(
+            "TaskDetailBottomSheetFragment",
+            getString(R.string.bottom_sheet_dismissed)
+        )
         // Notify the manager that this bottom sheet is dismissed
         BottomSheetManager.removeBottomSheet(TAG)
     }
 
     private fun setupUI() {
+        AppLogger.methodEntry("TaskDetailBottomSheetFragment", "setupUI")
         taskWithTag?.let { taskWithTag ->
             val task = taskWithTag.task
             val tag = taskWithTag.tag
@@ -89,11 +103,44 @@ class TaskDetailBottomSheetFragment : BottomSheetDialogFragment() {
                 
                 // Set description
                 taskDetailDescription.text = task.description
-                
+
+                // Set due date if exists
+                task.dueDateTime?.let { dueDateTime ->
+                    taskDetailDueDate.text = getString(
+                        R.string.due_format,
+                        DateTimeUtils.getRelativeTimeString(dueDateTime)
+                    )
+                    taskDetailDueDate.visibility = View.VISIBLE
+
+                    // Set text color based on whether task is overdue
+                    if (DateTimeUtils.isOverdue(dueDateTime) && !task.isCompleted) {
+                        taskDetailDueDate.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.error
+                            )
+                        )
+                        AppLogger.d(
+                            "TaskDetailBottomSheetFragment",
+                            getString(R.string.task_overdue, task.id)
+                        )
+                    } else {
+                        taskDetailDueDate.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                android.R.color.darker_gray
+                            )
+                        )
+                    }
+                } ?: run {
+                    taskDetailDueDate.visibility = View.GONE
+                }
+
                 // Set created date
                 val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
                 val createdDate = Date(task.createdAt)
-                taskDetailCreatedDate.text = "Created on ${dateFormat.format(createdDate)}"
+                taskDetailCreatedDate.text =
+                    getString(R.string.created_on_format, dateFormat.format(createdDate))
                 
                 // Set tag
                 taskDetailTag.text = tag.name
@@ -103,21 +150,29 @@ class TaskDetailBottomSheetFragment : BottomSheetDialogFragment() {
                 taskDetailTag.background = tagBackground
             }
         }
+        AppLogger.methodExit("TaskDetailBottomSheetFragment", "setupUI")
     }
 
     private fun setupClickListeners() {
+        AppLogger.methodEntry("TaskDetailBottomSheetFragment", "setupClickListeners")
         binding.taskDetailOverflow.setOnClickListener {
             showOverflowMenu()
         }
+        AppLogger.methodExit("TaskDetailBottomSheetFragment", "setupClickListeners")
     }
 
     private fun showOverflowMenu() {
+        AppLogger.methodEntry("TaskDetailBottomSheetFragment", "showOverflowMenu")
         val popupMenu = PopupMenu(requireContext(), binding.taskDetailOverflow)
         popupMenu.inflate(R.menu.menu_task_detail_overflow)
         
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_edit_task -> {
+                    AppLogger.uiOperation(
+                        "TaskDetailBottomSheetFragment",
+                        getString(R.string.edit_task_action)
+                    )
                     taskWithTag?.let { task ->
                         showEditTaskBottomSheet(task.task.id)
                     }
@@ -125,6 +180,10 @@ class TaskDetailBottomSheetFragment : BottomSheetDialogFragment() {
                     true
                 }
                 R.id.action_delete_task -> {
+                    AppLogger.uiOperation(
+                        "TaskDetailBottomSheetFragment",
+                        getString(R.string.delete_task_action)
+                    )
                     showDeleteConfirmationDialog()
                     true
                 }
@@ -133,24 +192,32 @@ class TaskDetailBottomSheetFragment : BottomSheetDialogFragment() {
         }
         
         popupMenu.show()
+        AppLogger.methodExit("TaskDetailBottomSheetFragment", "showOverflowMenu")
     }
 
     private fun showDeleteConfirmationDialog() {
+        AppLogger.methodEntry("TaskDetailBottomSheetFragment", "showDeleteConfirmationDialog")
         AlertDialog.Builder(requireContext())
-            .setTitle("Delete Task")
-            .setMessage("Are you sure you want to delete this task? This action cannot be undone.")
-            .setPositiveButton("Delete") { _, _ ->
+            .setTitle(getString(R.string.delete_task))
+            .setMessage(getString(R.string.delete_task_confirmation))
+            .setPositiveButton(getString(R.string.delete)) { _, _ ->
                 taskWithTag?.let { 
                     onDeleteTask?.invoke(it)
                     dismiss()
                 }
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
+        AppLogger.methodExit("TaskDetailBottomSheetFragment", "showDeleteConfirmationDialog")
     }
     
     private fun showEditTaskBottomSheet(taskId: Int) {
-        val bottomSheet = com.projects.todos.ui.fragment.CreateTaskBottomSheetFragment.newInstanceForEdit(taskId)
+        AppLogger.methodEntry(
+            "TaskDetailBottomSheetFragment",
+            "showEditTaskBottomSheet",
+            "taskId" to taskId
+        )
+        val bottomSheet = CreateTaskBottomSheetFragment.newInstanceForEdit(taskId)
         
         bottomSheet.onTaskUpdated = { updatedTask ->
             // Task was updated successfully
@@ -163,10 +230,12 @@ class TaskDetailBottomSheetFragment : BottomSheetDialogFragment() {
             bottomSheet,
             "EditTaskBottomSheet"
         )
+        AppLogger.methodExit("TaskDetailBottomSheetFragment", "showEditTaskBottomSheet")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        AppLogger.d("TaskDetailBottomSheetFragment", getString(R.string.on_destroy_view))
         _binding = null
     }
     

@@ -1,6 +1,5 @@
 package com.projects.todos.ui.adapter
 
-import android.content.Context
 import android.os.Build
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
@@ -13,6 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.projects.todos.R
 import com.projects.todos.data.relation.TaskWithTag
 import com.projects.todos.databinding.ItemTaskBinding
+import com.projects.todos.utils.AppLogger
+import com.projects.todos.utils.AppLogger.getString
+import com.projects.todos.utils.DateTimeUtils
 
 class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDiffCallback()) {
 
@@ -21,48 +23,79 @@ class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDif
     private var onTaskClicked: ((TaskWithTag) -> Unit)? = null
 
     fun setOnTaskCompletionChangedListener(listener: (Int, Boolean) -> Unit) {
+        AppLogger.d("TaskAdapter", "Setting task completion changed listener")
         onTaskCompletionChanged = listener
     }
 
     fun setOnTaskFavoriteChangedListener(listener: (Int, Boolean) -> Unit) {
+        AppLogger.d("TaskAdapter", "Setting task favorite changed listener")
         onTaskFavoriteChanged = listener
     }
 
     fun setOnTaskClickedListener(listener: (TaskWithTag) -> Unit) {
+        AppLogger.d("TaskAdapter", "Setting task clicked listener")
         onTaskClicked = listener
     }
 
     fun updateTaskCompletion(taskId: Int, isCompleted: Boolean) {
+        AppLogger.methodEntry(
+            "TaskAdapter", "updateTaskCompletion",
+            "taskId" to taskId,
+            "isCompleted" to isCompleted
+        )
         val currentList = currentList.toMutableList()
         val index = currentList.indexOfFirst { it.task.id == taskId }
         if (index != -1) {
             val updatedTask = currentList[index].task.copy(isCompleted = isCompleted)
             currentList[index] = currentList[index].copy(task = updatedTask)
             submitList(currentList)
+            AppLogger.d(
+                "TaskAdapter",
+                getString(R.string.task_completion_updated, taskId, isCompleted)
+            )
+        } else {
+            AppLogger.w("TaskAdapter", getString(R.string.task_not_found_update, taskId))
         }
+        AppLogger.methodExit("TaskAdapter", "updateTaskCompletion")
     }
 
     fun updateTaskFavorite(taskId: Int, isFavorite: Boolean) {
+        AppLogger.methodEntry(
+            "TaskAdapter", "updateTaskFavorite",
+            "taskId" to taskId,
+            "isFavorite" to isFavorite
+        )
         val currentList = currentList.toMutableList()
         val index = currentList.indexOfFirst { it.task.id == taskId }
         if (index != -1) {
             val updatedTask = currentList[index].task.copy(isFavorite = isFavorite)
             currentList[index] = currentList[index].copy(task = updatedTask)
             submitList(currentList)
+            AppLogger.d(
+                "TaskAdapter",
+                getString(R.string.task_favorite_updated, taskId, isFavorite)
+            )
+        } else {
+            AppLogger.w("TaskAdapter", getString(R.string.task_not_found_favorite, taskId))
         }
+        AppLogger.methodExit("TaskAdapter", "updateTaskFavorite")
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
+        AppLogger.methodEntry("TaskAdapter", "onCreateViewHolder")
         val binding = ItemTaskBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
+        AppLogger.methodExit("TaskAdapter", "onCreateViewHolder")
         return TaskViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
+        AppLogger.methodEntry("TaskAdapter", "onBindViewHolder", "position" to position)
         holder.bind(getItem(position))
+        AppLogger.methodExit("TaskAdapter", "onBindViewHolder")
     }
 
     override fun onViewAttachedToWindow(holder: TaskViewHolder) {
@@ -71,11 +104,13 @@ class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDif
         holder.itemView.startAnimation(
             AnimationUtils.loadAnimation(holder.itemView.context, R.anim.item_entrance)
         )
+        AppLogger.d("TaskAdapter", getString(R.string.view_attached_animation))
     }
 
     override fun onViewDetachedFromWindow(holder: TaskViewHolder) {
         super.onViewDetachedFromWindow(holder)
         holder.itemView.clearAnimation()
+        AppLogger.d("TaskAdapter", getString(R.string.view_detached))
     }
 
     inner class TaskViewHolder(
@@ -85,6 +120,7 @@ class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDif
         private var currentTaskId: Int = -1
 
         fun bind(taskWithTag: TaskWithTag) {
+            AppLogger.methodEntry("TaskViewHolder", "bind", "taskId" to taskWithTag.task.id)
             val task = taskWithTag.task
             val tag = taskWithTag.tag
 
@@ -110,8 +146,41 @@ class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDif
                     taskTag.setTextColor(android.graphics.Color.WHITE)
                 } catch (e: Exception) {
                     // Fallback to default background if color parsing fails
+                    AppLogger.w(
+                        "TaskViewHolder",
+                        getString(R.string.failed_parse_color, tag.colorHex)
+                    )
                     taskTag.background = ContextCompat.getDrawable(itemView.context, R.drawable.tag_background)
                     taskTag.setTextColor(android.graphics.Color.WHITE)
+                }
+
+                // Handle due date display
+                task.dueDateTime?.let { dueDateTime ->
+                    taskDueDate.text = getString(
+                        R.string.due_format,
+                        DateTimeUtils.getRelativeTimeString(dueDateTime)
+                    )
+                    taskDueDate.visibility = android.view.View.VISIBLE
+
+                    // Set text color based on whether task is overdue
+                    if (DateTimeUtils.isOverdue(dueDateTime) && !task.isCompleted) {
+                        taskDueDate.setTextColor(
+                            ContextCompat.getColor(
+                                itemView.context,
+                                R.color.error
+                            )
+                        )
+                        AppLogger.d("TaskViewHolder", getString(R.string.task_overdue, task.id))
+                    } else {
+                        taskDueDate.setTextColor(
+                            ContextCompat.getColor(
+                                itemView.context,
+                                android.R.color.darker_gray
+                            )
+                        )
+                    }
+                } ?: run {
+                    taskDueDate.visibility = android.view.View.GONE
                 }
 
                 // Clear previous listeners to prevent wrong callbacks
@@ -140,6 +209,10 @@ class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDif
                         
                         // Animate the completion change
                         updateCompletionUI(isChecked)
+                        AppLogger.uiOperation(
+                            "TaskViewHolder",
+                            getString(R.string.task_completion_toggled, task.id, isChecked)
+                        )
                         onTaskCompletionChanged?.invoke(task.id, isChecked)
                     }
                 }
@@ -156,6 +229,10 @@ class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDif
                         }
                         
                         val newFavoriteState = !task.isFavorite
+                        AppLogger.uiOperation(
+                            "TaskViewHolder",
+                            getString(R.string.task_favorite_toggled, task.id, newFavoriteState)
+                        )
                         onTaskFavoriteChanged?.invoke(task.id, newFavoriteState)
                     }
                 }
@@ -164,13 +241,23 @@ class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDif
                 itemView.setOnClickListener {
                     // Only process if this is still the correct task
                     if (currentTaskId == task.id) {
+                        AppLogger.uiOperation(
+                            "TaskViewHolder",
+                            getString(R.string.task_clicked, task.id)
+                        )
                         onTaskClicked?.invoke(taskWithTag)
                     }
                 }
             }
+            AppLogger.methodExit("TaskViewHolder", "bind")
         }
 
         private fun updateCompletionUI(isCompleted: Boolean) {
+            AppLogger.methodEntry(
+                "TaskViewHolder",
+                "updateCompletionUI",
+                "isCompleted" to isCompleted
+            )
             binding.apply {
                 if (isCompleted) {
                     // Animate strike-through effect
@@ -185,6 +272,7 @@ class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDif
                     
                     taskTitle.paintFlags = taskTitle.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
                     taskDescription.paintFlags = taskDescription.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
+                    AppLogger.d("TaskViewHolder", getString(R.string.task_marked_completed))
                 } else {
                     // Animate back to normal
                     taskTitle.animate()
@@ -198,8 +286,10 @@ class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDif
                     
                     taskTitle.paintFlags = taskTitle.paintFlags and android.graphics.Paint.STRIKE_THRU_TEXT_FLAG.inv()
                     taskDescription.paintFlags = taskDescription.paintFlags and android.graphics.Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                    AppLogger.d("TaskViewHolder", getString(R.string.task_marked_incomplete))
                 }
             }
+            AppLogger.methodExit("TaskViewHolder", "updateCompletionUI")
         }
     }
 
@@ -213,6 +303,7 @@ class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDif
                    oldItem.task.isFavorite == newItem.task.isFavorite &&
                    oldItem.task.title == newItem.task.title &&
                    oldItem.task.description == newItem.task.description &&
+                    oldItem.task.dueDateTime == newItem.task.dueDateTime &&
                    oldItem.tag.id == newItem.tag.id
         }
     }

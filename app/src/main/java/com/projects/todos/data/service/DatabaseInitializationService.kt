@@ -8,6 +8,7 @@ import com.projects.todos.data.entity.TagEntity
 import com.projects.todos.data.entity.TaskEntity
 import com.projects.todos.data.repository.TagRepository
 import com.projects.todos.data.repository.TaskRepository
+import com.projects.todos.utils.AppLogger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -17,12 +18,17 @@ class DatabaseInitializationService(
 ) {
     
     suspend fun initializeDatabaseWithDummyData(context: Context) = withContext(Dispatchers.IO) {
+        AppLogger.methodEntry("DatabaseInitializationService", "initializeDatabaseWithDummyData")
+        
         try {
+            AppLogger.i("DatabaseInitializationService", "Starting database initialization with dummy data")
+            
             // Parse dummy data from JSON
             val jsonString = context.resources.openRawResource(R.raw.dummy_data)
                 .bufferedReader().use { it.readText() }
             
             val dummyData = Gson().fromJson(jsonString, DummyData::class.java)
+            AppLogger.d("DatabaseInitializationService", "Parsed dummy data: ${dummyData.tags.size} tags, ${dummyData.tasks.size} tasks")
             
             // Insert tags first
             val tagEntities = dummyData.tags.map { dummyTag ->
@@ -34,13 +40,17 @@ class DatabaseInitializationService(
                 )
             }
             
+            AppLogger.d("DatabaseInitializationService", "Inserting ${tagEntities.size} tags")
             tagRepository.insertTags(tagEntities)
             
             // Get tag IDs for task insertion
             val tagNameToIdMap = mutableMapOf<String, Int>()
             tagEntities.forEach { tag ->
                 val insertedTag = tagRepository.getTagByName(tag.name)
-                insertedTag?.let { tagNameToIdMap[tag.name] = it.id }
+                insertedTag?.let { 
+                    tagNameToIdMap[tag.name] = it.id
+                    AppLogger.d("DatabaseInitializationService", "Mapped tag '${tag.name}' to ID ${it.id}")
+                }
             }
             
             // Insert tasks with proper tag IDs
@@ -56,12 +66,21 @@ class DatabaseInitializationService(
                         createdAt = System.currentTimeMillis(),
                         updatedAt = System.currentTimeMillis()
                     )
-                } else null
+                } else {
+                    AppLogger.w("DatabaseInitializationService", "Skipping task '${dummyTask.title}' - tag '${dummyTask.tagName}' not found")
+                    null
+                }
             }
             
+            AppLogger.d("DatabaseInitializationService", "Inserting ${taskEntities.size} tasks")
             taskRepository.insertTasks(taskEntities)
             
+            AppLogger.i("DatabaseInitializationService", "Database initialization completed successfully")
+            AppLogger.methodExit("DatabaseInitializationService", "initializeDatabaseWithDummyData")
+            
         } catch (e: Exception) {
+            AppLogger.error("DatabaseInitializationService", "initializeDatabaseWithDummyData", e, "Failed to initialize database")
+            AppLogger.methodExit("DatabaseInitializationService", "initializeDatabaseWithDummyData")
             e.printStackTrace()
             throw e
         }

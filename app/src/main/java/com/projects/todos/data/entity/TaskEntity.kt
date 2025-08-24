@@ -26,6 +26,7 @@ data class TaskEntity(
     val isCompleted: Boolean = false,
     val isFavorite: Boolean = false,
     val tagId: Int,
+    val dueDateTime: Long? = null,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
 ) : Parcelable

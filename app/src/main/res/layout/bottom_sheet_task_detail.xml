@@ -69,6 +69,21 @@
         android:lineSpacingExtra="4dp"
         tools:text="This is a detailed description of the task that provides more context about what needs to be done." />
 
+    <!-- Due Date (if exists) -->
+    <TextView
+        android:id="@+id/taskDetailDueDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorError"
+        android:drawableStart="@drawable/ic_calendar"
+        android:drawablePadding="12dp"
+        android:visibility="gone"
+        app:drawableTint="?attr/colorError"
+        tools:text="Due: Dec 25, 2024 at 5:30 PM"
+        tools:visibility="visible" />
+
     <!-- Created Date -->
     <TextView
         android:id="@+id/taskDetailCreatedDate"

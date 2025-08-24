@@ -35,4 +35,194 @@
     <string name="favorites">Favorites</string>
     <string name="all">All</string>
     <string name="favorite_tasks">Favorite Tasks</string>
+    
+    <!-- Task Creation/Editing -->
+    <string name="create_new_task">Create New Task</string>
+    <string name="edit_task">Edit Task</string>
+    <string name="task_title">Task Title</string>
+    <string name="edit_task_title">Edit Task Title</string>
+    <string name="description_optional">Description (Optional)</string>
+    <string name="due_date_time_optional">Due Date &amp; Time (Optional)</string>
+    <string name="pick_date">Pick Date</string>
+    <string name="pick_time">Pick Time</string>
+    <string name="change_date">Change Date</string>
+    <string name="change_time_format">Change Time (%1$s)</string>
+    <string name="select_due_date">Select Due Date</string>
+    <string name="select_due_time">Select Due Time</string>
+    <string name="select_tag">Select Tag</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="update">Update</string>
+    <string name="close">Close</string>
+    <string name="clear_due_date">Clear due date</string>
+    
+    <!-- Task Validation Messages -->
+    <string name="title_cannot_be_empty">Title cannot be empty</string>
+    <string name="please_select_tag">Please select a tag</string>
+    <string name="select_future_date_time">Please select a future date and time</string>
+    <string name="task_created_successfully">Task created successfully</string>
+    <string name="task_updated_successfully">Task updated successfully</string>
+    <string name="failed_to_create_task">Failed to create task: %1$s</string>
+    <string name="failed_to_update_task">Failed to update task: %1$s</string>
+    <string name="failed_to_load_task">Failed to load task: %1$s</string>
+    <string name="failed_to_load_tags">Failed to load tags: %1$s</string>
+    
+    <!-- Task Display -->
+    <string name="due_format">Due: %1$s</string>
+    <string name="due_date_only_format">Due: %1$s (Time not set)</string>
+    <string name="created_on_format">Created on %1$s</string>
+    <string name="more_options">More options</string>
+    <string name="toggle_favorite">Toggle favorite</string>
+    
+    <!-- Task Detail -->
+    <string name="delete_task">Delete Task</string>
+    <string name="delete_task_confirmation">Are you sure you want to delete this task? This action cannot be undone.</string>
+    <string name="delete">Delete</string>
+    <string name="edit_task_action">Edit task</string>
+    <string name="delete_task_action">Delete task</string>
+    
+    <!-- Quick Add -->
+    <string name="type_task">Type a task…</string>
+    <string name="add_to_format">Add to %1$s…</string>
+    <string name="task_added">Task added! ✨</string>
+    <string name="undo">Undo</string>
+    
+    <!-- Empty States -->
+    <string name="no_tasks_found">No tasks found</string>
+    <string name="no_tasks_available">No tasks available yet.</string>
+    <string name="no_tag_tasks_format">No %1$s tasks yet</string>
+    <string name="no_tasks_category">No tasks available in this category yet.</string>
+    
+    <!-- Welcome Messages -->
+    <string name="welcome_format">Welcome, %1$s! 🎉</string>
+    <string name="welcome_default">Welcome to Todo! 🎉</string>
+    
+    <!-- Notification Messages -->
+    <string name="task_due_format">Task Due: %1$s</string>
+    <string name="task_due_now">Your task is due now!</string>
+    <string name="task_reminders">Task Reminders</string>
+    <string name="notifications_task_reminders">Notifications for task reminders</string>
+    
+    <!-- Date/Time Formats -->
+    <string name="today_at_format">Today at %1$s</string>
+    <string name="tomorrow_at_format">Tomorrow at %1$s</string>
+    <string name="full_date_time_format">%1$s at %2$s</string>
+    
+    <!-- Logging Messages -->
+    <string name="task_completion_toggled">Task completion toggled: taskId=%1$d, isCompleted=%2$s</string>
+    <string name="task_favorite_toggled">Task favorite toggled: taskId=%1$d, isFavorite=%2$s</string>
+    <string name="task_clicked">Task clicked: taskId=%1$d</string>
+    <string name="task_created_log">Task created successfully: taskId=%1$d, title=\'%2$s\'</string>
+    <string name="task_updated_log">Task updated successfully: taskId=%1$d, title=\'%2$s\'</string>
+    <string name="quick_task_added">Quick task added successfully: \'%1$s\'</string>
+    <string name="failed_add_quick_task">Failed to add quick task: \'%1$s\'</string>
+    <string name="cannot_add_empty_task">Cannot add quick task with empty title</string>
+    <string name="task_not_found">Task not found for editing: %1$d</string>
+    <string name="task_loaded_editing">Task loaded for editing: %1$s</string>
+    <string name="due_date_loaded">Due date loaded: %1$d</string>
+    <string name="due_date_display_updated">Due date display updated: %1$d</string>
+    <string name="due_date_display_cleared">Due date display cleared</string>
+    <string name="due_date_cleared">Due date cleared</string>
+    <string name="date_selected">Date selected: %1$d</string>
+    <string name="time_selected">Time selected: %1$d:%2$d</string>
+    <string name="selected_date_past">Selected date/time is in the past: %1$d</string>
+    <string name="tag_selected">Tag selected: %1$s (ID: %2$d)</string>
+    <string name="auto_selected_general">Auto-selected General tag</string>
+    <string name="selected_existing_tag">Selected existing tag: %1$s</string>
+    <string name="notification_scheduled">Notification scheduled for task %1$d</string>
+    <string name="notification_rescheduled">Notification rescheduled for task %1$d</string>
+    <string name="notification_cancelled">Notification cancelled for task %1$d</string>
+    <string name="cannot_schedule_past">Cannot schedule notification for past time: %1$d</string>
+    <string name="scheduling_delay">Scheduling notification with delay: %1$dms</string>
+    <string name="no_due_date_skip">No due date set for task %1$d, skipping notification</string>
+    <string name="notification_displayed">Notification displayed for task %1$d</string>
+    <string name="notification_channel_created">Notification channel created successfully</string>
+    <string name="notification_channels_not_supported">Notification channels not supported on this API level</string>
+    <string name="task_overdue">Task is overdue: taskId=%1$d</string>
+    <string name="task_marked_completed">Task marked as completed with strike-through</string>
+    <string name="task_marked_incomplete">Task marked as incomplete, removed strike-through</string>
+    <string name="failed_parse_color">Failed to parse tag color: %1$s</string>
+    <string name="view_attached_animation">View attached to window with animation</string>
+    <string name="view_detached">View detached from window</string>
+    <string name="task_completion_updated">Task completion updated in adapter: taskId=%1$d, isCompleted=%2$s</string>
+    <string name="task_favorite_updated">Task favorite updated in adapter: taskId=%1$d, isFavorite=%2$s</string>
+    <string name="task_not_found_update">Task not found for completion update: taskId=%1$d</string>
+    <string name="task_not_found_favorite">Task not found for favorite update: taskId=%1$d</string>
+    <string name="tags_updated">Tags updated: %1$d tags</string>
+    <string name="tasks_updated">Tasks updated: %1$d tasks</string>
+    <string name="selected_tag_updated">Selected tag name updated: %1$s</string>
+    <string name="all_tag_selected">All tag selected</string>
+    <string name="tag_selected_ui">Tag selected: tagName=%1$s, tagId=%2$d</string>
+    <string name="auto_selected_general_ui">Auto-selected General tag</string>
+    <string name="task_delete_requested">Task delete requested: taskId=%1$d</string>
+    <string name="task_updated_callback">Task updated callback received: taskId=%1$d</string>
+    <string name="task_created_callback">Task created callback received: taskId=%1$d</string>
+    <string name="empty_state_shown">Empty state shown</string>
+    <string name="task_list_shown">Task list shown</string>
+    <string name="empty_state_messages_updated">Empty state messages updated: title=\'%1$s\'</string>
+    <string name="quick_add_hint_updated">Quick add hint updated: \'%1$s\'</string>
+    <string name="welcome_message_set">Welcome message set: %1$s</string>
+    <string name="recycler_view_padding">RecyclerView padding set: %1$d</string>
+    <string name="view_model_initialized">ViewModel and repositories initialized</string>
+    <string name="task_completion_changed">Task completion changed: taskId=%1$d, isCompleted=%2$s</string>
+    <string name="task_favorite_changed">Task favorite changed: taskId=%1$d, isFavorite=%2$s</string>
+    <string name="fab_clicked">FAB clicked</string>
+    <string name="quick_add_button_clicked">Quick add button clicked</string>
+    <string name="quick_add_enter_pressed">Quick add Enter key pressed</string>
+    <string name="hide_keyboard">Hide keyboard</string>
+    <string name="hide_keyboard_clear_focus">Hide keyboard and clear focus</string>
+    <string name="clear_focus">Clear focus</string>
+    <string name="show_quick_feedback">Show quick feedback: %1$s</string>
+    <string name="undo_clicked">Undo clicked</string>
+    <string name="close_button_clicked">Close button clicked</string>
+    <string name="cancel_button_clicked">Cancel button clicked</string>
+    <string name="create_update_button_clicked">Create/Update button clicked</string>
+    <string name="date_picker_button_clicked">Date picker button clicked</string>
+    <string name="time_picker_button_clicked">Time picker button clicked</string>
+    <string name="clear_due_date_button_clicked">Clear due date button clicked</string>
+    <string name="ime_action_next">IME action: Next field</string>
+    <string name="ime_action_submit">IME action: Submit form</string>
+    <string name="bottom_sheet_dismissed">Bottom sheet dismissed</string>
+    <string name="show_success">Show success: %1$s</string>
+    <string name="show_error">Show error: %1$s</string>
+    <string name="on_destroy_view">onDestroyView called</string>
+    <string name="creating_instance_creation">Creating new instance for task creation</string>
+    <string name="creating_instance_editing">Creating new instance for task editing: taskId=%1$d</string>
+    <string name="loaded_tags_count">Loaded %1$d tags</string>
+    <string name="selected_tag_changed">Selected tag changed to: %1$s (ID: %2$s)</string>
+    <string name="getting_selected_tag">Getting selected tag ID: %1$s</string>
+    <string name="task_completion_toggled_vm">Task completion toggled: taskId=%1$d, isCompleted=%2$s</string>
+    <string name="task_favorite_toggled_vm">Task favorite toggled: taskId=%1$d, isFavorite=%2$s</string>
+    <string name="notification_cancelled_vm">Notification cancelled for task %1$d</string>
+    <string name="task_deleted_successfully">Task deleted successfully: taskId=%1$d</string>
+    <string name="cannot_create_empty_title">Cannot create quick task with empty title</string>
+    <string name="quick_task_created">Quick task created successfully: taskId=%1$d, title=\'%2$s\'</string>
+    <string name="task_view_model_initialized">TaskViewModel initialized</string>
+    <string name="loaded_tags_vm">Loaded %1$d tags</string>
+    <string name="db_select">DB: SELECT on %1$s (ID: %2$s)</string>
+    <string name="db_insert">DB: INSERT on %1$s (ID: %2$s)</string>
+    <string name="db_update">DB: UPDATE on %1$s (ID: %2$s)</string>
+    <string name="db_delete">DB: DELETE on %1$s (ID: %2$s)</string>
+    <string name="db_update_completion">DB: UPDATE completion on %1$s (ID: %2$s)</string>
+    <string name="db_update_favorite">DB: UPDATE favorite on %1$s (ID: %2$s)</string>
+    <string name="db_delete_all">DB: DELETE ALL on %1$s</string>
+    <string name="notification_scheduled_log">NOTIFICATION: SCHEDULED for task %1$d</string>
+    <string name="notification_cancelled_log">NOTIFICATION: CANCELLED for task %1$d</string>
+    <string name="notification_rescheduled_log">NOTIFICATION: RESCHEDULED for task %1$d</string>
+    <string name="notification_displayed_log">NOTIFICATION: DISPLAYED for task %1$d</string>
+    <string name="datetime_format_date">DATETIME: formatDate (timestamp: %1$d)</string>
+    <string name="datetime_format_time">DATETIME: formatTime (timestamp: %1$d)</string>
+    <string name="datetime_format_datetime">DATETIME: formatDateTime (timestamp: %1$d)</string>
+    <string name="datetime_format_full">DATETIME: formatFullDateTime (timestamp: %1$d)</string>
+    <string name="datetime_is_overdue">DATETIME: isOverdue (timestamp: %1$d)</string>
+    <string name="datetime_is_today">DATETIME: isToday (timestamp: %1$d)</string>
+    <string name="datetime_is_tomorrow">DATETIME: isTomorrow (timestamp: %1$d)</string>
+    <string name="task_overdue_check">Task overdue check: %1$s for timestamp: %2$d</string>
+    <string name="is_today_check">Is today check: %1$s for timestamp: %2$d</string>
+    <string name="is_tomorrow_check">Is tomorrow check: %1$s for timestamp: %2$d</string>
+    <string name="relative_time_string">Relative time string: %1$s</string>
+    <string name="performance_operation">PERFORMANCE: %1$s took %2$dms</string>
+    
+    <!-- Date/Time Validation -->
+    <string name="both_date_time_required">Please select both date and time for the due date</string>
 </resources>
