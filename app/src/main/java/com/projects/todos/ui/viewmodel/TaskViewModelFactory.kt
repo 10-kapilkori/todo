@@ -1,5 +1,6 @@
 package com.projects.todos.ui.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.projects.todos.data.repository.TaskRepository
@@ -13,7 +14,7 @@ class TaskViewModelFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TaskViewModel::class.java)) {
-            return TaskViewModel(taskRepository, tagRepository) as T
+            return TaskViewModel(taskRepository, tagRepository, SavedStateHandle()) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

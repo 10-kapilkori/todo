@@ -9,30 +9,27 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.chip.Chip
 import com.projects.todos.R
 import com.projects.todos.data.UserPreferences
-import com.projects.todos.data.database.TodoDatabase
-import com.projects.todos.data.entity.TagEntity
 import com.projects.todos.data.relation.TaskWithTag
-import com.projects.todos.data.repository.TagRepository
 import com.projects.todos.databinding.FragmentTasksBinding
-import com.projects.todos.ui.adapter.TaskAdapter
-import com.projects.todos.ui.adapter.TaskAdapterCallback
+import com.projects.todos.ui.adapter.SectionedTasksAdapter
+import com.projects.todos.ui.adapter.SectionedTasksAdapterCallback
 import com.projects.todos.ui.viewmodel.TaskViewModel
 import com.projects.todos.utils.AppLogger
 import com.projects.todos.utils.BottomSheetManager
 import com.projects.todos.utils.ThemeUtils
 import com.projects.todos.utils.hideKeyboard
+import com.projects.todos.utils.applyImeAndSystemBottomInset
 import kotlinx.coroutines.launch
 
-class TasksFragment : Fragment(), TaskAdapterCallback {
+class TasksFragment : Fragment(), SectionedTasksAdapterCallback {
 
     private var _binding: FragmentTasksBinding? = null
     private val binding get() = _binding!!
 
     private val taskViewModel: TaskViewModel by activityViewModels()
-    private lateinit var taskAdapter: TaskAdapter
+    private lateinit var sectionedTasksAdapter: SectionedTasksAdapter
     private lateinit var userPreferences: UserPreferences
 
     override fun onCreateView(
@@ -55,6 +52,7 @@ class TasksFragment : Fragment(), TaskAdapterCallback {
         setupFab()
         setupQuickAdd()
         setupKeyboardHiding()
+        setupInsets()
         observeData()
         
         AppLogger.methodExit("TasksFragment", "onViewCreated")
@@ -69,11 +67,11 @@ class TasksFragment : Fragment(), TaskAdapterCallback {
 
     private fun setupRecyclerView() {
         AppLogger.methodEntry("TasksFragment", "setupRecyclerView")
-        taskAdapter = TaskAdapter(this)
+        sectionedTasksAdapter = SectionedTasksAdapter(this)
         
         binding.tasksRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = taskAdapter
+            adapter = sectionedTasksAdapter
             // Add item decoration for better spacing
             addItemDecoration(object : androidx.recyclerview.widget.RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(
@@ -82,8 +80,8 @@ class TasksFragment : Fragment(), TaskAdapterCallback {
                     parent: androidx.recyclerview.widget.RecyclerView,
                     state: androidx.recyclerview.widget.RecyclerView.State
                 ) {
-                    outRect.top = 4
-                    outRect.bottom = 4
+                    outRect.top = 2
+                    outRect.bottom = 2
                 }
             })
         }
@@ -104,6 +102,13 @@ class TasksFragment : Fragment(), TaskAdapterCallback {
             AppLogger.d("TasksFragment", getString(R.string.recycler_view_padding, totalBottomPadding))
         }
         AppLogger.methodExit("TasksFragment", "setupRecyclerView")
+    }
+
+    private fun setupInsets() {
+        AppLogger.methodEntry("TasksFragment", "setupInsets")
+        // Apply IME and system bottom insets to RecyclerView
+        binding.tasksRecyclerView.applyImeAndSystemBottomInset()
+        AppLogger.methodExit("TasksFragment", "setupInsets")
     }
 
     private fun setupFab() {
@@ -234,113 +239,24 @@ class TasksFragment : Fragment(), TaskAdapterCallback {
 
     private fun observeData() {
         AppLogger.methodEntry("TasksFragment", "observeData")
-        
-        // Observe tags and create chips dynamically
-        viewLifecycleOwner.lifecycleScope.launch {
-            taskViewModel.tags.collect { tags ->
-                createTagChips(tags)
-                AppLogger.d("TasksFragment", getString(R.string.tags_updated, tags.size))
-            }
-        }
 
-        // Observe tasks and handle empty state
+        // Observe display items and handle empty state
         viewLifecycleOwner.lifecycleScope.launch {
-            taskViewModel.tasks.collect { tasks ->
-                taskAdapter.submitList(tasks)
-                AppLogger.d("TasksFragment", getString(R.string.tasks_updated, tasks.size))
+            taskViewModel.displayItems.collect { displayItems ->
+                sectionedTasksAdapter.submitList(displayItems)
+                AppLogger.d("TasksFragment", getString(R.string.tasks_updated, displayItems.size))
                 // Force update empty state with a slight delay to ensure UI is ready
                 binding.tasksRecyclerView.post {
-                    updateEmptyState(tasks.isEmpty())
+                    updateEmptyState(displayItems.isEmpty())
                 }
             }
         }
 
-        // Observe selected tag name for empty state messages and quick add hint
-        viewLifecycleOwner.lifecycleScope.launch {
-            taskViewModel.selectedTagName.collect { tagName ->
-                updateEmptyStateMessages(tagName)
-                updateQuickAddHint(tagName)
-                AppLogger.d("TasksFragment", getString(R.string.selected_tag_updated, tagName))
-            }
-        }
+        // Update empty state messages and quick add hint (no tag filtering)
+        updateEmptyStateMessages(null)
+        updateQuickAddHint(null)
+        
         AppLogger.methodExit("TasksFragment", "observeData")
-    }
-
-    private fun createTagChips(tags: List<TagEntity>) {
-        AppLogger.methodEntry("TasksFragment", "createTagChips", "tagCount" to tags.size)
-        // Clear all existing chips
-        val chipGroup = binding.filterChipGroup
-        chipGroup.removeAllViews()
-
-        // Create "All" chip first
-        val allChip = createStyledChip(getString(R.string.all)).apply {
-            setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    // Apply theme colors
-                    ThemeUtils.applyChipThemeColors(this, true)
-                    
-                    // Uncheck all other chips when "All" is selected
-                    for (i in 0 until chipGroup.childCount) {
-                        val child = chipGroup.getChildAt(i)
-                        if (child is Chip && child != this) {
-                            child.isChecked = false
-                            // Apply unselected theme to other chips
-                            ThemeUtils.applyChipThemeColors(child, false)
-                        }
-                    }
-                    taskViewModel.setSelectedTag(null, null)
-                    AppLogger.uiOperation("TasksFragment", getString(R.string.all_tag_selected))
-                } else {
-                    // Prevent deselection - keep it checked without changing theme
-                    ThemeUtils.applyChipThemeColors(this, false)
-                }
-            }
-        }
-        chipGroup.addView(allChip)
-
-        // Add tag chips
-        tags.forEach { tag ->
-            val chip = createStyledChip(tag.name).apply {
-                setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked) {
-                        // Apply theme colors
-                        ThemeUtils.applyChipThemeColors(this, true)
-                        
-                        // Uncheck "All" chip when a tag is selected
-                        allChip.isChecked = false
-                        ThemeUtils.applyChipThemeColors(allChip, false)
-                        
-                        // Uncheck all other tag chips
-                        for (i in 0 until chipGroup.childCount) {
-                            val child = chipGroup.getChildAt(i)
-                            if (child is Chip && child != this && child != allChip) {
-                                child.isChecked = false
-                                ThemeUtils.applyChipThemeColors(child, false)
-                            }
-                        }
-                        
-                        taskViewModel.setSelectedTag(tag.id, tag.name)
-                        AppLogger.uiOperation("TasksFragment", getString(R.string.tag_selected_ui, tag.name, tag.id))
-                    } else {
-                        // Allow deselection when another chip is selected
-                        ThemeUtils.applyChipThemeColors(this, false)
-                    }
-                }
-            }
-            chipGroup.addView(chip)
-            
-            // Auto-select "General" chip by default
-            if (tag.name == "General") {
-                chip.isChecked = true
-                taskViewModel.setSelectedTag(tag.id, tag.name)
-                AppLogger.d("TasksFragment", getString(R.string.auto_selected_general_ui))
-            }
-        }
-        AppLogger.methodExit("TasksFragment", "createTagChips")
-    }
-
-    private fun createStyledChip(text: String): Chip {
-        return ThemeUtils.createStyledChip(requireContext(), text)
     }
 
     private fun showTaskDetailBottomSheet(taskWithTag: TaskWithTag) {
@@ -450,19 +366,32 @@ class TasksFragment : Fragment(), TaskAdapterCallback {
         _binding = null
     }
 
-    // TaskAdapterCallback implementation
-    override fun onTaskCompletionChanged(taskId: Int, isCompleted: Boolean) {
-        AppLogger.uiOperation("TasksFragment", getString(R.string.task_completion_changed, taskId, isCompleted))
-        taskViewModel.toggleTaskCompletion(taskId, isCompleted)
+    // SectionedTasksAdapterCallback implementation
+    override fun onTagHeaderClicked(tagId: Int, tagName: String) {
+        AppLogger.uiOperation("TasksFragment", "Tag header clicked: $tagName ($tagId)")
+        
+        // Toggle accordion: if this tag is already expanded, collapse it; otherwise expand it
+        val currentExpandedTagId = taskViewModel.expandedTagId.value
+        val newExpandedTagId = if (currentExpandedTagId == tagId) null else tagId
+        
+        taskViewModel.setExpandedTag(newExpandedTagId)
+        
+        // Announce for accessibility
+        val announcement = if (newExpandedTagId == null) "Collapsed" else "Expanded"
+        @Suppress("DEPRECATION")
+        binding.root.announceForAccessibility(announcement.toString())
     }
 
-    override fun onTaskFavoriteChanged(taskId: Int, isFavorite: Boolean) {
-        AppLogger.uiOperation("TasksFragment", getString(R.string.task_favorite_changed, taskId, isFavorite))
-        taskViewModel.toggleTaskFavorite(taskId, isFavorite)
-    }
-
-    override fun onTaskClicked(taskWithTag: TaskWithTag) {
-        AppLogger.uiOperation("TasksFragment", getString(R.string.task_clicked, taskWithTag.task.id))
-        showTaskDetailBottomSheet(taskWithTag)
+    override fun onTaskClicked(taskId: Int) {
+        AppLogger.uiOperation("TasksFragment", getString(R.string.task_clicked, taskId))
+        
+        // Find the task and show detail bottom sheet
+        viewLifecycleOwner.lifecycleScope.launch {
+            taskViewModel.tasks.collect { tasks ->
+                val taskWithTag = tasks.find { it.task.id == taskId }
+                taskWithTag?.let { showTaskDetailBottomSheet(it) }
+                return@collect
+            }
+        }
     }
 }

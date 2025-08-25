@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:minHeight="@dimen/min_touch_target"
+    android:paddingHorizontal="@dimen/task_row_padding_horizontal"
+    android:paddingVertical="@dimen/task_row_padding_vertical">
+
+    <!-- Color Dot -->
+    <View
+        android:id="@+id/colorDot"
+        android:layout_width="@dimen/task_dot_size"
+        android:layout_height="@dimen/task_dot_size"
+        android:layout_marginStart="@dimen/task_dot_margin_start"
+        android:background="@drawable/color_dot_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Task Title -->
+    <TextView
+        android:id="@+id/taskTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/task_title_margin_start"
+        android:layout_marginEnd="@dimen/task_title_margin_end"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="?attr/colorOnSurface"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/colorDot"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="This is a task title that might be longer and wrap to multiple lines to test the layout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

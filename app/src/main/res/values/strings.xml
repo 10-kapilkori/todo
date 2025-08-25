@@ -93,6 +93,7 @@
     <string name="no_tasks_available">No tasks available yet.</string>
     <string name="no_tag_tasks_format">No %1$s tasks yet</string>
     <string name="no_tasks_category">No tasks available in this category yet.</string>
+    <string name="no_tasks_in_this_tag">No tasks in this tag</string>
     
     <!-- Welcome Messages -->
     <string name="welcome_format">Hi, %1$s 👋</string>

@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="chip_stroke_width">1dp</dimen>
-    <dimen name="chip_corner_radius">20dp</dimen>
+    <!-- Accordion Header Dimensions -->
+    <dimen name="header_padding_horizontal">16dp</dimen>
+    <dimen name="header_padding_vertical">12dp</dimen>
+    <dimen name="header_icon_size">20dp</dimen>
+    <dimen name="header_chevron_size">24dp</dimen>
+    <dimen name="header_count_pill_padding_horizontal">8dp</dimen>
+    <dimen name="header_count_pill_padding_vertical">4dp</dimen>
+    
+    <!-- Task Row Dimensions -->
+    <dimen name="task_dot_size">6dp</dimen>
+    <dimen name="task_dot_margin_start">16dp</dimen>
+    <dimen name="task_title_margin_start">12dp</dimen>
+    <dimen name="task_title_margin_end">16dp</dimen>
+    <dimen name="task_row_padding_vertical">12dp</dimen>
+    <dimen name="task_row_padding_horizontal">16dp</dimen>
+    
+    <!-- Touch Target Minimum -->
+    <dimen name="min_touch_target">48dp</dimen>
+    
+    <!-- Legacy dimensions for backward compatibility -->
     <dimen name="tag_corner_radius">12dp</dimen>
 </resources>

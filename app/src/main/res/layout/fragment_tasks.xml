@@ -13,26 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- ChipGroup for filtering -->
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginBottom="16dp"
-            android:scrollbars="none">
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/filterChipGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:chipSpacingHorizontal="8dp"
-                app:singleSelection="true">
-
-            </com.google.android.material.chip.ChipGroup>
-
-        </HorizontalScrollView>
-
-        <!-- Quick Add Section below ChipGroup -->
+        <!-- Quick Add Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
