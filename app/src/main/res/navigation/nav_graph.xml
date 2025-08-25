@@ -12,9 +12,9 @@
         tools:layout="@layout/fragment_tasks" />
 
     <fragment
-        android:id="@+id/navigation_favorites"
-        android:name="com.projects.todos.ui.fragment.FavoritesFragment"
-        android:label="@string/favorites"
-        tools:layout="@layout/fragment_favorites" />
+        android:id="@+id/navigation_templates"
+        android:name="com.projects.todos.ui.fragment.TemplatesFragment"
+        android:label="@string/templates"
+        tools:layout="@layout/fragment_templates" />
 
 </navigation>

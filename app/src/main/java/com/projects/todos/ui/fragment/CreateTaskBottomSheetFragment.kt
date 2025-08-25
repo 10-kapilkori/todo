@@ -379,10 +379,17 @@ class CreateTaskBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun showTimePicker() {
         AppLogger.methodEntry("CreateTaskBottomSheetFragment", "showTimePicker")
+        
+        // Set default time to current time + 5 minutes
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.MINUTE, 5)
+        val defaultHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val defaultMinute = calendar.get(Calendar.MINUTE)
+        
         val timePicker = MaterialTimePicker.Builder()
             .setTimeFormat(TimeFormat.CLOCK_12H)
-            .setHour(12)
-            .setMinute(0)
+            .setHour(defaultHour)
+            .setMinute(defaultMinute)
             .setTitleText(getString(R.string.select_due_time))
             .build()
 

@@ -156,4 +156,44 @@ class TaskRepository(private val taskDao: TaskDao) {
             throw e
         }
     }
+
+    suspend fun getTasksByTemplateId(templateId: Int): List<TaskEntity> {
+        AppLogger.methodEntry("TaskRepository", "getTasksByTemplateId", "templateId" to templateId)
+        return try {
+            val result = taskDao.getTasksByTemplateId(templateId)
+            AppLogger.dbOperation("TaskRepository", "SELECT by templateId", "tasks", "templateId: $templateId, count: ${result.size}")
+            AppLogger.methodExit("TaskRepository", "getTasksByTemplateId", result)
+            result
+        } catch (e: Exception) {
+            AppLogger.error("TaskRepository", "getTasksByTemplateId", e, "templateId: $templateId")
+            AppLogger.methodExit("TaskRepository", "getTasksByTemplateId", emptyList<TaskEntity>())
+            emptyList<TaskEntity>()
+        }
+    }
+
+    suspend fun detachTasksFromTemplate(templateId: Int) {
+        AppLogger.methodEntry("TaskRepository", "detachTasksFromTemplate", "templateId" to templateId)
+        try {
+            taskDao.detachTasksFromTemplate(templateId)
+            AppLogger.dbOperation("TaskRepository", "UPDATE detach from template", "tasks", "templateId: $templateId")
+            AppLogger.methodExit("TaskRepository", "detachTasksFromTemplate")
+        } catch (e: Exception) {
+            AppLogger.error("TaskRepository", "detachTasksFromTemplate", e, "templateId: $templateId")
+            AppLogger.methodExit("TaskRepository", "detachTasksFromTemplate")
+            throw e
+        }
+    }
+
+    suspend fun deleteTasksByTemplateId(templateId: Int) {
+        AppLogger.methodEntry("TaskRepository", "deleteTasksByTemplateId", "templateId" to templateId)
+        try {
+            taskDao.deleteTasksByTemplateId(templateId)
+            AppLogger.dbOperation("TaskRepository", "DELETE by templateId", "tasks", "templateId: $templateId")
+            AppLogger.methodExit("TaskRepository", "deleteTasksByTemplateId")
+        } catch (e: Exception) {
+            AppLogger.error("TaskRepository", "deleteTasksByTemplateId", e, "templateId: $templateId")
+            AppLogger.methodExit("TaskRepository", "deleteTasksByTemplateId")
+            throw e
+        }
+    }
 }

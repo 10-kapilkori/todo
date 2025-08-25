@@ -6,7 +6,7 @@
         android:title="@string/tasks" />
     
     <item
-        android:id="@+id/navigation_favorites"
-        android:icon="@drawable/ic_favorite_filled"
-        android:title="@string/favorites" />
+        android:id="@+id/navigation_templates"
+        android:icon="@drawable/ic_edit_note"
+        android:title="@string/templates" />
 </menu>

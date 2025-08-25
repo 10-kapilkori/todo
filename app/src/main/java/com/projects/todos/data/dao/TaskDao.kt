@@ -61,4 +61,14 @@ interface TaskDao {
     
     @Query("UPDATE tasks SET tagId = :newTagId, updatedAt = :timestamp WHERE tagId = :oldTagId")
     suspend fun updateTasksTagId(oldTagId: Int, newTagId: Int, timestamp: Long = System.currentTimeMillis())
+    
+    // Template-related methods
+    @Query("SELECT * FROM tasks WHERE templateId = :templateId")
+    suspend fun getTasksByTemplateId(templateId: Int): List<TaskEntity>
+    
+    @Query("UPDATE tasks SET templateId = -1 WHERE templateId = :templateId")
+    suspend fun detachTasksFromTemplate(templateId: Int)
+    
+    @Query("DELETE FROM tasks WHERE templateId = :templateId")
+    suspend fun deleteTasksByTemplateId(templateId: Int)
 }

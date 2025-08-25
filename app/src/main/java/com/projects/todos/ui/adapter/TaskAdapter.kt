@@ -15,27 +15,17 @@ import com.projects.todos.databinding.ItemTaskBinding
 import com.projects.todos.utils.AppLogger
 import com.projects.todos.utils.AppLogger.getString
 import com.projects.todos.utils.DateTimeUtils
+import androidx.core.graphics.toColorInt
 
-class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDiffCallback()) {
+interface TaskAdapterCallback {
+    fun onTaskCompletionChanged(taskId: Int, isCompleted: Boolean)
+    fun onTaskFavoriteChanged(taskId: Int, isFavorite: Boolean)
+    fun onTaskClicked(taskWithTag: TaskWithTag)
+}
 
-    private var onTaskCompletionChanged: ((Int, Boolean) -> Unit)? = null
-    private var onTaskFavoriteChanged: ((Int, Boolean) -> Unit)? = null
-    private var onTaskClicked: ((TaskWithTag) -> Unit)? = null
-
-    fun setOnTaskCompletionChangedListener(listener: (Int, Boolean) -> Unit) {
-        AppLogger.d("TaskAdapter", "Setting task completion changed listener")
-        onTaskCompletionChanged = listener
-    }
-
-    fun setOnTaskFavoriteChangedListener(listener: (Int, Boolean) -> Unit) {
-        AppLogger.d("TaskAdapter", "Setting task favorite changed listener")
-        onTaskFavoriteChanged = listener
-    }
-
-    fun setOnTaskClickedListener(listener: (TaskWithTag) -> Unit) {
-        AppLogger.d("TaskAdapter", "Setting task clicked listener")
-        onTaskClicked = listener
-    }
+class TaskAdapter(
+    private val callback: TaskAdapterCallback
+) : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDiffCallback()) {
 
     fun updateTaskCompletion(taskId: Int, isCompleted: Boolean) {
         AppLogger.methodEntry(
@@ -134,7 +124,7 @@ class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDif
                 
                 // Use the tag's actual color from colorHex
                 try {
-                    val tagColor = android.graphics.Color.parseColor(tag.colorHex)
+                    val tagColor = tag.colorHex.toColorInt()
                     val tagBackground = android.graphics.drawable.GradientDrawable().apply {
                         shape = android.graphics.drawable.GradientDrawable.RECTANGLE
                         cornerRadius = 12f * itemView.context.resources.displayMetrics.density
@@ -213,7 +203,7 @@ class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDif
                             "TaskViewHolder",
                             getString(R.string.task_completion_toggled, task.id, isChecked)
                         )
-                        onTaskCompletionChanged?.invoke(task.id, isChecked)
+                        callback.onTaskCompletionChanged(task.id, isChecked)
                     }
                 }
 
@@ -233,7 +223,7 @@ class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDif
                             "TaskViewHolder",
                             getString(R.string.task_favorite_toggled, task.id, newFavoriteState)
                         )
-                        onTaskFavoriteChanged?.invoke(task.id, newFavoriteState)
+                        callback.onTaskFavoriteChanged(task.id, newFavoriteState)
                     }
                 }
 
@@ -245,7 +235,7 @@ class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDif
                             "TaskViewHolder",
                             getString(R.string.task_clicked, task.id)
                         )
-                        onTaskClicked?.invoke(taskWithTag)
+                        callback.onTaskClicked(taskWithTag)
                     }
                 }
             }
@@ -306,15 +296,5 @@ class TaskAdapter : ListAdapter<TaskWithTag, TaskAdapter.TaskViewHolder>(TaskDif
                     oldItem.task.dueDateTime == newItem.task.dueDateTime &&
                    oldItem.tag.id == newItem.tag.id
         }
-    }
-    
-    private fun isColorDark(color: Int): Boolean {
-        val red = android.graphics.Color.red(color)
-        val green = android.graphics.Color.green(color)
-        val blue = android.graphics.Color.blue(color)
-        
-        // Calculate relative luminance
-        val luminance = (0.299 * red + 0.587 * green + 0.114 * blue) / 255
-        return luminance < 0.5
     }
 }

@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.projects.todos.data.database.TodoDatabase
 import com.projects.todos.data.relation.TaskWithTag
-import com.projects.todos.data.repository.TaskRepository
 import com.projects.todos.databinding.FragmentFavoritesBinding
 import com.projects.todos.ui.adapter.TaskAdapter
+import com.projects.todos.ui.adapter.TaskAdapterCallback
 import com.projects.todos.ui.fragment.CreateTaskBottomSheetFragment
 import com.projects.todos.ui.fragment.TaskDetailBottomSheetFragment
 import com.projects.todos.ui.viewmodel.TaskViewModel
@@ -19,12 +19,12 @@ import com.projects.todos.utils.BottomSheetManager
 
 import kotlinx.coroutines.launch
 
-class FavoritesFragment : Fragment() {
+class FavoritesFragment : Fragment(), TaskAdapterCallback {
     
     private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding!!
     
-    private lateinit var taskViewModel: TaskViewModel
+    private val taskViewModel: TaskViewModel by activityViewModels()
     private lateinit var taskAdapter: TaskAdapter
     
     override fun onCreateView(
@@ -39,31 +39,14 @@ class FavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        setupViewModel()
         setupRecyclerView()
         setupFab()
         observeData()
     }
     
-    private fun setupViewModel() {
-        val database = TodoDatabase.getDatabase(requireContext())
-        val taskRepository = TaskRepository(database.taskDao())
-        // We don't need TagRepository for favorites, but TaskViewModel requires it
-        val tagRepository = com.projects.todos.data.repository.TagRepository(database.tagDao())
-        taskViewModel = TaskViewModel(taskRepository, tagRepository)
-    }
-    
     private fun setupRecyclerView() {
-        taskAdapter = TaskAdapter()
-        taskAdapter.setOnTaskCompletionChangedListener { taskId, isCompleted ->
-            taskViewModel.toggleTaskCompletion(taskId, isCompleted)
-        }
-        taskAdapter.setOnTaskFavoriteChangedListener { taskId, isFavorite ->
-            taskViewModel.toggleTaskFavorite(taskId, isFavorite)
-        }
-        taskAdapter.setOnTaskClickedListener { taskWithTag ->
-            showTaskDetailBottomSheet(taskWithTag)
-        }
+        taskAdapter = TaskAdapter(this)
+        
         binding.favoritesRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = taskAdapter
@@ -75,8 +58,6 @@ class FavoritesFragment : Fragment() {
             showCreateTaskBottomSheet()
         }
     }
-    
-
 
     private fun showCreateTaskBottomSheet() {
         val bottomSheet = CreateTaskBottomSheetFragment.newInstance()
@@ -96,7 +77,7 @@ class FavoritesFragment : Fragment() {
 
     private fun observeData() {
         // Observe favorite tasks
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             taskViewModel.favoriteTasks.collect { favoriteTasks ->
                 taskAdapter.submitList(favoriteTasks)
             }
@@ -128,5 +109,18 @@ class FavoritesFragment : Fragment() {
         // Clean up bottom sheets when fragment is destroyed
         BottomSheetManager.clearAllBottomSheets()
         _binding = null
+    }
+
+    // TaskAdapterCallback implementation
+    override fun onTaskCompletionChanged(taskId: Int, isCompleted: Boolean) {
+        taskViewModel.toggleTaskCompletion(taskId, isCompleted)
+    }
+
+    override fun onTaskFavoriteChanged(taskId: Int, isFavorite: Boolean) {
+        taskViewModel.toggleTaskFavorite(taskId, isFavorite)
+    }
+
+    override fun onTaskClicked(taskWithTag: TaskWithTag) {
+        showTaskDetailBottomSheet(taskWithTag)
     }
 }

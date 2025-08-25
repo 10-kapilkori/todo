@@ -3,12 +3,11 @@ package com.projects.todos.data.entity
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Entity(
-    tableName = "tasks",
+    tableName = "templates",
     foreignKeys = [
         ForeignKey(
             entity = TagEntity::class,
@@ -16,20 +15,15 @@ import kotlinx.parcelize.Parcelize
             childColumns = ["tagId"],
             onDelete = ForeignKey.CASCADE
         )
-    ],
-    indices = [Index("templateId")]
+    ]
 )
 @Parcelize
-data class TaskEntity(
+data class TemplateEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val title: String,
-    val description: String,
-    val isCompleted: Boolean = false,
-    val isFavorite: Boolean = false,
+    val description: String = "",
     val tagId: Int,
-    val dueDateTime: Long? = null,
     val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis(),
-    val templateId: Int = -1 // -1 means "no template association"
+    val updatedAt: Long = System.currentTimeMillis()
 ) : Parcelable

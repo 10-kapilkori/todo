@@ -38,6 +38,7 @@
     
     <!-- Task Creation/Editing -->
     <string name="create_new_task">Create New Task</string>
+    <string name="create_task">Create Task</string>
     <string name="edit_task">Edit Task</string>
     <string name="task_title">Task Title</string>
     <string name="edit_task_title">Edit Task Title</string>
@@ -278,4 +279,35 @@
     <string name="cannot_delete_last_tag_message">You must have at least one tag available. Please create another tag first.</string>
     <string name="general">General</string>
     <string name="ok">OK</string>
+    
+    <!-- Templates -->
+    <string name="templates">Templates</string>
+    <string name="preplanned">Preplanned</string>
+    <string name="habits">Habits</string>
+    <string name="create_template">Create Template</string>
+    <string name="edit_template">Edit Template</string>
+    <string name="template_title">Template Title</string>
+    <string name="template_description">Template Description</string>
+    <string name="use_template">Use Template</string>
+    <string name="template_created_successfully">Template created successfully</string>
+    <string name="template_updated_successfully">Template updated successfully</string>
+    <string name="template_deleted_successfully">Template deleted successfully</string>
+    <string name="task_created_from_template">Task created from template</string>
+    <string name="view">View</string>
+    <string name="delete_template">Delete Template</string>
+    <string name="template_deletion_confirmation_no_tasks">Are you sure you want to delete the template \"%s\"?</string>
+    <string name="template_deletion_confirmation_with_tasks" formatted="false">Are you sure you want to delete the template \"%s\"? This template is linked to %d task(s).</string>
+    <string name="template_linked_tasks_message">This template is linked to %d task(s).</string>
+    <string name="delete_template_and_tasks">Delete template &amp; all associated tasks</string>
+    <string name="keep_tasks_detach_template">Keep tasks, detach from template</string>
+    <string name="template_title_required">Template title is required</string>
+    <string name="failed_to_create_template">Failed to create template: %1$s</string>
+    <string name="failed_to_update_template">Failed to update template: %1$s</string>
+    <string name="failed_to_delete_template">Failed to delete template: %1$s</string>
+    <string name="failed_to_create_task_from_template">Failed to create task from template: %1$s</string>
+    <string name="no_templates_found">No templates found</string>
+    <string name="no_templates_available">No templates available in this category yet.</string>
+    <string name="no_tag_templates_format">No %1$s templates yet</string>
+    <string name="add_template">Add Template</string>
+    <string name="template_settings">Template Settings</string>
 </resources>

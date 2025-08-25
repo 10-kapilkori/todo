@@ -10,9 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.projects.todos.R
 import com.projects.todos.data.OnboardingItem
 
+interface OnboardingAdapterCallback {
+    fun onGetStartedClicked()
+}
+
 class OnboardingAdapter(
     private val onboardingItems: List<OnboardingItem>,
-    private val onGetStartedClick: () -> Unit
+    private val callback: OnboardingAdapterCallback
 ) : RecyclerView.Adapter<OnboardingAdapter.OnboardingViewHolder>() {
 
     inner class OnboardingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -58,7 +62,7 @@ class OnboardingAdapter(
                                 .scaleY(1.0f)
                                 .setDuration(100)
                                 .withEndAction {
-                                    onGetStartedClick()
+                                    callback.onGetStartedClicked()
                                 }
                                 .start()
                         }

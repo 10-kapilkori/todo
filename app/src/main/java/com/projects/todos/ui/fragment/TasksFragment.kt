@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
@@ -15,9 +16,9 @@ import com.projects.todos.data.database.TodoDatabase
 import com.projects.todos.data.entity.TagEntity
 import com.projects.todos.data.relation.TaskWithTag
 import com.projects.todos.data.repository.TagRepository
-import com.projects.todos.data.repository.TaskRepository
 import com.projects.todos.databinding.FragmentTasksBinding
 import com.projects.todos.ui.adapter.TaskAdapter
+import com.projects.todos.ui.adapter.TaskAdapterCallback
 import com.projects.todos.ui.viewmodel.TaskViewModel
 import com.projects.todos.utils.AppLogger
 import com.projects.todos.utils.BottomSheetManager
@@ -25,12 +26,12 @@ import com.projects.todos.utils.ThemeUtils
 import com.projects.todos.utils.hideKeyboard
 import kotlinx.coroutines.launch
 
-class TasksFragment : Fragment() {
+class TasksFragment : Fragment(), TaskAdapterCallback {
 
     private var _binding: FragmentTasksBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var taskViewModel: TaskViewModel
+    private val taskViewModel: TaskViewModel by activityViewModels()
     private lateinit var taskAdapter: TaskAdapter
     private lateinit var userPreferences: UserPreferences
 
@@ -49,7 +50,7 @@ class TasksFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         AppLogger.methodEntry("TasksFragment", "onViewCreated")
 
-        setupViewModel()
+        setupUserPreferences()
         setupRecyclerView()
         setupFab()
         setupQuickAdd()
@@ -59,33 +60,17 @@ class TasksFragment : Fragment() {
         AppLogger.methodExit("TasksFragment", "onViewCreated")
     }
 
-
-    private fun setupViewModel() {
-        AppLogger.methodEntry("TasksFragment", "setupViewModel")
-        val database = TodoDatabase.getDatabase(requireContext())
-        val taskRepository = TaskRepository(database.taskDao())
-        val tagRepository = TagRepository(database.tagDao())
-        taskViewModel = TaskViewModel(taskRepository, tagRepository)
+    private fun setupUserPreferences() {
+        AppLogger.methodEntry("TasksFragment", "setupUserPreferences")
         userPreferences = UserPreferences(requireContext())
         AppLogger.d("TasksFragment", getString(R.string.view_model_initialized))
-        AppLogger.methodExit("TasksFragment", "setupViewModel")
+        AppLogger.methodExit("TasksFragment", "setupUserPreferences")
     }
 
     private fun setupRecyclerView() {
         AppLogger.methodEntry("TasksFragment", "setupRecyclerView")
-        taskAdapter = TaskAdapter()
-        taskAdapter.setOnTaskCompletionChangedListener { taskId, isCompleted ->
-            AppLogger.uiOperation("TasksFragment", getString(R.string.task_completion_changed, taskId, isCompleted))
-            taskViewModel.toggleTaskCompletion(taskId, isCompleted)
-        }
-        taskAdapter.setOnTaskFavoriteChangedListener { taskId, isFavorite ->
-            AppLogger.uiOperation("TasksFragment", getString(R.string.task_favorite_changed, taskId, isFavorite))
-            taskViewModel.toggleTaskFavorite(taskId, isFavorite)
-        }
-        taskAdapter.setOnTaskClickedListener { taskWithTag ->
-            AppLogger.uiOperation("TasksFragment", getString(R.string.task_clicked, taskWithTag.task.id))
-            showTaskDetailBottomSheet(taskWithTag)
-        }
+        taskAdapter = TaskAdapter(this)
+        
         binding.tasksRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = taskAdapter
@@ -249,8 +234,9 @@ class TasksFragment : Fragment() {
 
     private fun observeData() {
         AppLogger.methodEntry("TasksFragment", "observeData")
+        
         // Observe tags and create chips dynamically
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             taskViewModel.tags.collect { tags ->
                 createTagChips(tags)
                 AppLogger.d("TasksFragment", getString(R.string.tags_updated, tags.size))
@@ -258,7 +244,7 @@ class TasksFragment : Fragment() {
         }
 
         // Observe tasks and handle empty state
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             taskViewModel.tasks.collect { tasks ->
                 taskAdapter.submitList(tasks)
                 AppLogger.d("TasksFragment", getString(R.string.tasks_updated, tasks.size))
@@ -270,7 +256,7 @@ class TasksFragment : Fragment() {
         }
 
         // Observe selected tag name for empty state messages and quick add hint
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             taskViewModel.selectedTagName.collect { tagName ->
                 updateEmptyStateMessages(tagName)
                 updateQuickAddHint(tagName)
@@ -462,5 +448,21 @@ class TasksFragment : Fragment() {
         // Clean up bottom sheets when fragment is destroyed
         BottomSheetManager.clearAllBottomSheets()
         _binding = null
+    }
+
+    // TaskAdapterCallback implementation
+    override fun onTaskCompletionChanged(taskId: Int, isCompleted: Boolean) {
+        AppLogger.uiOperation("TasksFragment", getString(R.string.task_completion_changed, taskId, isCompleted))
+        taskViewModel.toggleTaskCompletion(taskId, isCompleted)
+    }
+
+    override fun onTaskFavoriteChanged(taskId: Int, isFavorite: Boolean) {
+        AppLogger.uiOperation("TasksFragment", getString(R.string.task_favorite_changed, taskId, isFavorite))
+        taskViewModel.toggleTaskFavorite(taskId, isFavorite)
+    }
+
+    override fun onTaskClicked(taskWithTag: TaskWithTag) {
+        AppLogger.uiOperation("TasksFragment", getString(R.string.task_clicked, taskWithTag.task.id))
+        showTaskDetailBottomSheet(taskWithTag)
     }
 }

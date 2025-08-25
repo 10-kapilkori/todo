@@ -3,13 +3,19 @@ package com.projects.todos
 import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.projects.todos.data.UserPreferences
+import com.projects.todos.data.database.TodoDatabase
+import com.projects.todos.data.repository.TagRepository
+import com.projects.todos.data.repository.TaskRepository
 import com.projects.todos.databinding.ActivityMainBinding
 import com.projects.todos.ui.BaseActivity
 import com.projects.todos.ui.SettingsActivity
+import com.projects.todos.ui.viewmodel.TaskViewModel
+import com.projects.todos.ui.viewmodel.TaskViewModelFactory
 import com.projects.todos.utils.setupKeyboardDismissOnOutsideClick
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -17,6 +23,9 @@ import kotlinx.coroutines.launch
 class MainActivity : BaseActivity() {
     
     private lateinit var binding: ActivityMainBinding
+    
+    // Shared ViewModel for all fragments
+    lateinit var sharedTaskViewModel: TaskViewModel
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,10 +36,19 @@ class MainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupSharedViewModel()
         setupNavigation()
         setupToolbar()
         setupGreeting()
         setupKeyboardDismiss()
+    }
+
+    private fun setupSharedViewModel() {
+        val database = TodoDatabase.getDatabase(this)
+        val taskRepository = TaskRepository(database.taskDao())
+        val tagRepository = TagRepository(database.tagDao())
+        val factory = TaskViewModelFactory(taskRepository, tagRepository)
+        sharedTaskViewModel = ViewModelProvider(this, factory)[TaskViewModel::class.java]
     }
 
     private fun setupKeyboardDismiss() {

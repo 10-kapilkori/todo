@@ -10,11 +10,12 @@ import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.projects.todos.R
 import com.projects.todos.adapter.OnboardingAdapter
+import com.projects.todos.adapter.OnboardingAdapterCallback
 import com.projects.todos.data.OnboardingItem
 import com.projects.todos.databinding.ActivityOnboardingBinding
 import com.projects.todos.utils.JsonParser
 
-class OnboardingActivity : BaseActivity() {
+class OnboardingActivity : BaseActivity(), OnboardingAdapterCallback {
     
     private lateinit var binding: ActivityOnboardingBinding
     private lateinit var onboardingItems: List<OnboardingItem>
@@ -32,8 +33,6 @@ class OnboardingActivity : BaseActivity() {
         setupOnboarding()
     }
     
-
-    
     private fun setupOnboarding() {
         // Parse onboarding items from JSON
         onboardingItems = JsonParser.parseOnboardingItems(this)
@@ -45,9 +44,7 @@ class OnboardingActivity : BaseActivity() {
         }
         
         // Setup ViewPager2
-        val adapter = OnboardingAdapter(onboardingItems) {
-            navigateToNameEntry()
-        }
+        val adapter = OnboardingAdapter(onboardingItems, this)
         
         binding.onboardingViewPager.adapter = adapter
         binding.onboardingViewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
@@ -106,5 +103,10 @@ class OnboardingActivity : BaseActivity() {
         val intent = Intent(this, NameEntryActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    // OnboardingAdapterCallback implementation
+    override fun onGetStartedClicked() {
+        navigateToNameEntry()
     }
 }
