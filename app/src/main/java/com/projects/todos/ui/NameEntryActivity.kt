@@ -1,12 +1,14 @@
 package com.projects.todos.ui
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.WindowManager
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.setPadding
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
 import com.projects.todos.R
 import com.projects.todos.data.UserPreferences
@@ -27,13 +29,14 @@ class NameEntryActivity : BaseActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        // Set soft input mode for edge-to-edge friendly behavior
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
-        
+
         binding = ActivityNameEntryBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
+            WindowInsetsCompat.CONSUMED
+        }
+
         userPreferences = UserPreferences(this)
         
         // Initialize database services
